@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <Authors>Hanzc</Authors>
+    <Company>HZC</Company>
+    <Product>HZC.MyOrm</Product>
+    <Description>自己手撸的玩票性质的Orm</Description>
+    <Copyright>Copyright © Microsoft 2016</Copyright>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <AssemblyName>HZC.MyOrm</AssemblyName>
+    <RootNamespace>HZC.MyOrm</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Data.SqlClient" Version="4.6.0" />
+  </ItemGroup>
+
+</Project>

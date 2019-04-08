@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MyOrm\MyOrm.csproj" />
+    <ProjectReference Include="..\HZC.MyOrm\HZC.MyOrm.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,14 +1,14 @@
 ﻿using Dapper;
-using MyOrm.Queryable;
+using HZC.MyOrm.Queryable;
 using System;
 using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
-using MyOrm.Expressions;
+using HZC.MyOrm.Expressions;
 using System.Collections;
 using System.Collections.Generic;
-using MyOrm;
+using HZC.MyOrm;
 
 namespace ConsoleApp1
 {
@@ -52,7 +52,7 @@ namespace ConsoleApp1
                     var result = list.ToList();
                     sw.Stop();
 
-                    Console.WriteLine($"MyOrm 第 {i + 1} 次用时：{sw.ElapsedMilliseconds}；数据总量：{result.Count()}");
+                    Console.WriteLine($"HZC.MyOrm 第 {i + 1} 次用时：{sw.ElapsedMilliseconds}；数据总量：{result.Count()}");
                 }
             }
 

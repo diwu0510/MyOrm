@@ -1,5 +1,5 @@
-﻿using MyOrm.Attributes;
-using MyOrm.Commons;
+﻿using HZC.MyOrm.Attributes;
+using HZC.MyOrm.Commons;
 using System;
 
 namespace ConsoleApp1
