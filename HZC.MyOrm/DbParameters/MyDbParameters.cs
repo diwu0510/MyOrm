@@ -33,7 +33,7 @@ namespace HZC.MyOrm.DbParameters
                 var list = new List<SqlParameter>();
                 foreach (var item in _dict)
                 {
-                    var param = new SqlParameter($@"{item.Name}", item.Value);
+                    var param = new SqlParameter(item.Name, item.Value);
                     if (item.Direction != null)
                     {
                         param.Direction = item.Direction.Value;
@@ -47,6 +47,7 @@ namespace HZC.MyOrm.DbParameters
 
         public void Add(string parameterName, object value)
         {
+            parameterName = parameterName.StartsWith(_prefix) ? parameterName : _prefix + parameterName;
             var item = _dict.FirstOrDefault(d => d.Name == parameterName);
             var newItem = new MyDbParameter {Name = parameterName, Value = value};
 
@@ -62,6 +63,7 @@ namespace HZC.MyOrm.DbParameters
 
         public void Add(string parameterName, object value, ParameterDirection direction)
         {
+            parameterName = parameterName.StartsWith(_prefix) ? parameterName : _prefix + parameterName;
             var item = _dict.FirstOrDefault(d => d.Name == parameterName);
             var newItem = new MyDbParameter { Name = parameterName, Value = value, Direction = direction};
 
@@ -86,7 +88,7 @@ namespace HZC.MyOrm.DbParameters
                 var entityInfo = MyEntityContainer.Get(obj.GetType());
                 foreach(var property in entityInfo.Properties.Where(p => p.IsMap))
                 {
-                    Add(property.Name, property.PropertyInfo.GetValue(obj));
+                    Add(_prefix + property.Name, property.PropertyInfo.GetValue(obj));
                 }
             }
             else
@@ -95,7 +97,7 @@ namespace HZC.MyOrm.DbParameters
                 foreach (var property in properties.Where(p => p.PropertyType.IsValueType || 
                                                                p.PropertyType == typeof(string)))
                 {
-                    Add(property.Name, property.GetValue(obj));
+                    Add(_prefix + property.Name, property.GetValue(obj));
                 }
             }
         }
@@ -110,13 +112,7 @@ namespace HZC.MyOrm.DbParameters
 
         public void Add(SqlParameter parameter)
         {
-            var parameterName = parameter.ParameterName;
-            if (parameterName.StartsWith(_prefix))
-            {
-                parameterName = parameterName.Remove(0, 1);
-            }
-            
-            Add(parameterName, parameter.Value);
+            Add(parameter.ParameterName, parameter.Value);
         }
 
         public void Add(SqlParameter[] parameters)

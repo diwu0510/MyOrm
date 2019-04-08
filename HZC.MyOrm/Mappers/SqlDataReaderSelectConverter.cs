@@ -212,10 +212,13 @@ namespace HZC.MyOrm.Mappers
                 return result;
             }
 
-            while (sdr.Read())
+            do
             {
-                result.Add(func.Invoke(sdr));
-            }
+                while (sdr.Read())
+                {
+                    result.Add(func(sdr));
+                }
+            } while (sdr.NextResult());
 
             return result;
         }
@@ -257,10 +260,13 @@ namespace HZC.MyOrm.Mappers
                 return result;
             }
 
-            while (sdr.Read())
+            do
             {
-                result.Add(func.Invoke(sdr));
-            }
+                while (sdr.Read())
+                {
+                    result.Add(func(sdr));
+                }
+            } while (sdr.NextResult());
 
             return result;
         }

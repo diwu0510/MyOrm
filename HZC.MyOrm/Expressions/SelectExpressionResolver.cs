@@ -147,7 +147,6 @@ namespace HZC.MyOrm.Expressions
         {
             foreach (var binding in node.Bindings)
             {
-                var result = new SelectResolveResult { MemberName = binding.Member.Name };
                 if (binding.BindingType == MemberBindingType.Assignment)
                 {
                     var expression = ((MemberAssignment) binding).Expression;
@@ -184,28 +183,6 @@ namespace HZC.MyOrm.Expressions
                         }
                     }
                 }
-            }
-        }
-
-        private string ResolveStackToField(Stack<string> parameterStack)
-        {
-            switch (parameterStack.Count)
-            {
-                case 2:
-                {
-                    // 调用了导航属性
-                    var propertyName = parameterStack.Pop();
-                    var propertyFieldName = parameterStack.Pop();
-                        
-                    return $"{propertyName}.{propertyFieldName}";
-                }
-                case 1:
-                {
-                    var propertyName = parameterStack.Pop();
-                    return propertyName;
-                }
-                default:
-                    throw new ArgumentException("尚未支持大于2层属性调用。如 student.Clazz.School.Id>10，请使用类似 student.Clazz.SchoolId > 0 替代");
             }
         }
     }

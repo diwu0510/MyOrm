@@ -18,7 +18,7 @@ namespace HZC.MyOrm.Mappers
 
         private readonly string _key;
 
-        public SqlDataReaderConverter(IReadOnlyCollection<string> props = null)
+        public SqlDataReaderConverter(IEnumerable<string> props = null)
         {
             _master = MyEntityContainer.Get(typeof(T));
             _include = props?.ToList() ?? new List<string>();
@@ -30,7 +30,7 @@ namespace HZC.MyOrm.Mappers
             _key += string.Join("-", _include.Distinct());
         }
 
-        public SqlDataReaderConverter(MyEntity entity, IReadOnlyCollection<string> props = null)
+        public SqlDataReaderConverter(MyEntity entity, IEnumerable<string> props = null)
         {
             _master = entity;
             _include = props?.ToList() ?? new List<string>();
@@ -95,7 +95,7 @@ namespace HZC.MyOrm.Mappers
             for (var i = 0; i < sdr.FieldCount; i++)
             {
                 var fieldName = sdr.GetName(i);
-                var fieldNames = fieldName.Split('_');
+                var fieldNames = fieldName.Split("__");
 
                 if (fieldNames.Length == 1)
                 {

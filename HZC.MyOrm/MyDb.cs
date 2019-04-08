@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 
 namespace HZC.MyOrm
 {
@@ -74,6 +75,11 @@ namespace HZC.MyOrm
             return new MyQueryable<T>(_connectionString).Where(t => t.Id == id).FirstOrDefault();
         }
 
+        public async Task<T> LoadAsync<T>(int id) where T : class, IEntity, new()
+        {
+            return await new MyQueryable<T>(_connectionString).Where(t => t.Id == id).FirstOrDefaultAsync();
+        }
+
         /// <summary>
         /// 根据条件加载一个实体
         /// </summary>
@@ -100,6 +106,24 @@ namespace HZC.MyOrm
             return query.FirstOrDefault();
         }
 
+        public async Task<T> LoadAsync<T>(Expression<Func<T, bool>> where = null,
+            Expression<Func<T, object>> orderBy = null,
+            MyDbOrderBy dbSort = MyDbOrderBy.Asc) where T : class, new()
+        {
+            var query = new MyQueryable<T>(_connectionString);
+            if (where != null)
+            {
+                query.Where(where);
+            }
+
+            if (orderBy != null)
+            {
+                query.OrderBy(orderBy, dbSort);
+            }
+
+            return await query.FirstOrDefaultAsync();
+        }
+
         /// <summary>
         /// 根据条件加载所有实体
         /// </summary>
@@ -123,6 +147,23 @@ namespace HZC.MyOrm
             }
 
             return query.ToList();
+        }
+
+        public async Task<List<T>> FetchAsync<T>(Expression<Func<T, bool>> where = null, Expression<Func<T, object>> orderBy = null,
+            MyDbOrderBy dbSort = MyDbOrderBy.Asc) where T : class, new()
+        {
+            var query = new MyQueryable<T>(_connectionString);
+            if (where != null)
+            {
+                query.Where(where);
+            }
+
+            if (orderBy != null)
+            {
+                query.OrderBy(orderBy, dbSort);
+            }
+
+            return await query.ToListAsync();
         }
 
         /// <summary>
@@ -155,6 +196,26 @@ namespace HZC.MyOrm
             }
 
             return query.ToPageList(pageIndex, pageSize, out recordCount);
+        }
+
+        public async Task<PagingResult<T>> PageListAsync<T>(int pageIndex,
+            int pageSize,
+            Expression<Func<T, bool>> where = null,
+            Expression<Func<T, object>> orderBy = null,
+            MyDbOrderBy dbSort = MyDbOrderBy.Asc) where T : class, new()
+        {
+            var query = new MyQueryable<T>(_connectionString);
+            if (where != null)
+            {
+                query.Where(where);
+            }
+
+            if (orderBy != null)
+            {
+                query.OrderBy(orderBy, dbSort);
+            }
+
+            return await query.ToPageListAsync(pageIndex, pageSize);
         }
         #endregion
 
@@ -189,10 +250,57 @@ namespace HZC.MyOrm
                     conn.Open();
                     var command = new SqlCommand(sql, conn);
                     command.Parameters.AddRange(parameters.Parameters);
-                    return (int)command.ExecuteScalar();
+                    var obj = command.ExecuteScalar();
+                    if (obj == null)
+                    {
+                        return 0;
+                    }
+
+                    return (int) obj;
                 }
             }
         }
+
+        public async Task<int> GetCountAsync<T>(Expression<Func<T, bool>> expression = null) where T : class, IEntity, new()
+        {
+            var entityInfo = MyEntityContainer.Get(typeof(T));
+
+            if (expression == null)
+            {
+                var sql = $"SELECT COUNT(0) FROM [{entityInfo.TableName}]";
+                using (var conn = new SqlConnection(_connectionString))
+                {
+                    conn.Open();
+                    var command = new SqlCommand(sql, conn);
+                    return (int)command.ExecuteScalar();
+                }
+            }
+            else
+            {
+                var resolver = new EditConditionResolver<T>(entityInfo);
+                var result = resolver.Resolve(expression.Body);
+                var condition = result.Condition;
+                var parameters = result.Parameters;
+
+                condition = string.IsNullOrWhiteSpace(condition) ? "1=1" : condition;
+
+                var sql = $"SELECT COUNT(0) FROM [{entityInfo.TableName}] WHERE [{condition}]";
+                using (var conn = new SqlConnection(_connectionString))
+                {
+                    conn.Open();
+                    var command = new SqlCommand(sql, conn);
+                    command.Parameters.AddRange(parameters.Parameters);
+                    var obj = await command.ExecuteScalarAsync();
+                    if (obj == null)
+                    {
+                        return 0;
+                    }
+
+                    return (int) obj;
+                }
+            }
+        }
+
         #endregion
 
         #region 执行SQL语句
@@ -200,6 +308,78 @@ namespace HZC.MyOrm
         //{
 
         //}
+        #endregion
+
+        #region 执行查询
+
+        public List<T> FetchBySql<T>(string sql, object parameters)
+        {
+            using (var conn = new SqlConnection(_connectionString))
+            {
+                return conn.Fetch<T>(sql, parameters);
+            }
+        }
+
+        public async Task<List<T>> FetchBySqlAsync<T>(string sql, object parameters)
+        {
+            using (var conn = new SqlConnection(_connectionString))
+            {
+                return await conn.FetchAsync<T>(sql, parameters);
+            }
+        }
+
+        public T LoadBySql<T>(string sql, object parameters)
+        {
+            using (var conn = new SqlConnection(_connectionString))
+            {
+                return conn.SingleOrDefault<T>(sql, parameters);
+            }
+        }
+
+        public async Task<T> LoadBySqlAsync<T>(string sql, object parameters)
+        {
+            using (var conn = new SqlConnection(_connectionString))
+            {
+                return await conn.SingleOrDefaultAsync<T>(sql, parameters);
+            }
+        }
+
+        #endregion
+
+        #region 执行sql语句
+
+        public int Execute(string sql, object parameters)
+        {
+            using (var conn = new SqlConnection(_connectionString))
+            {
+                return conn.Execute(sql, parameters);
+            }
+        }
+
+        public async Task<int> ExecuteAsync(string sql, object parameters)
+        {
+            using (var conn = new SqlConnection(_connectionString))
+            {
+                return await conn.ExecuteAsync(sql, parameters);
+            }
+        }
+
+        public T ExecuteScalar<T>(string sql, object parameters)
+        {
+            using (var conn = new SqlConnection(_connectionString))
+            {
+                return conn.ExecuteScalar<T>(sql, parameters);
+            }
+        }
+
+        public async Task<T> ExecuteScalarAsync<T>(string sql, object parameters)
+        {
+            using (var conn = new SqlConnection(_connectionString))
+            {
+                return await conn.ExecuteScalarAsync<T>(sql, parameters);
+            }
+        }
+
         #endregion
     }
 }

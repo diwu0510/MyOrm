@@ -213,7 +213,7 @@ namespace HZC.MyOrm.Queryable
             var sqlBuilder = new SqlServerBuilder();
             var sql = sqlBuilder.Select(from, fields, _where, _orderBy);
 
-            var visitor = new SqlDataReaderConverter<T>();
+            var visitor = new SqlDataReaderConverter<T>(_includeProperties.Select(p => p.PropertyName));
             List<T> result;
             using (var conn = new SqlConnection(_connectionString))
             {
@@ -236,7 +236,7 @@ namespace HZC.MyOrm.Queryable
             var sqlBuilder = new SqlServerBuilder();
             var sql = sqlBuilder.Select(from, fields, _where, _orderBy);
 
-            var visitor = new SqlDataReaderConverter<T>();
+            var visitor = new SqlDataReaderConverter<T>(_includeProperties.Select(p => p.PropertyName));
             List<T> result;
             using (var conn = new SqlConnection(_connectionString))
             {
@@ -398,7 +398,7 @@ namespace HZC.MyOrm.Queryable
                             sb.Append(
                                 string.Join(",",
                                     propEntity.Properties.Where(p => p.IsMap).Select(p =>
-                                        $"[{propEntity.TableName}].[{p.FieldName}] AS [{property.PropertyName}__{p.Name}]"))
+                                        $"[{property.PropertyName}].[{p.FieldName}] AS [{property.PropertyName}__{p.Name}]"))
                             );
                         }
                         else
@@ -408,7 +408,7 @@ namespace HZC.MyOrm.Queryable
                                     propEntity.Properties.Where(p =>
                                             p.IsMap && property.FieldList.Contains(p.Name))
                                         .Select(p =>
-                                            $"[{propEntity.TableName}].[{p.FieldName}] AS [{property.PropertyName}__{p.Name}]"))
+                                            $"[{property.PropertyName}].[{p.FieldName}] AS [{property.PropertyName}__{p.Name}]"))
                             );
                         }
                     }
@@ -429,7 +429,7 @@ namespace HZC.MyOrm.Queryable
                         var prop = _masterEntity.Properties.Single(p => p.Name == property.PropertyName);
                         if (prop != null)
                         {
-                            sb.Append($",[{_masterEntity.TableName}].[{prop.FieldName}] AS [{property.MemberName}]");
+                            sb.Append($",[{_masterEntity.TableName}].[{property.PropertyName}] AS [{property.MemberName}]");
                         }
                     }
                     else
@@ -468,7 +468,7 @@ namespace HZC.MyOrm.Queryable
                     var prop = _masterEntity.Properties.Single(p => p.Name == property);
                     if (prop == null) continue;
                     var propEntity = GetIncludePropertyEntityInfo(prop.PropertyInfo.PropertyType);
-                    sb.Append($" LEFT JOIN [{propEntity.TableName}] AS [{property}] ON [{_masterEntity.TableName}].[{prop.ForeignKey}]=[{propEntity.TableName}].[{propEntity.KeyColumn}]");
+                    sb.Append($" LEFT JOIN [{propEntity.TableName}] AS [{property}] ON [{_masterEntity.TableName}].[{prop.ForeignKey}]=[{property}].[{prop.MasterKey}]");
                 }
 
                 return sb.ToString();

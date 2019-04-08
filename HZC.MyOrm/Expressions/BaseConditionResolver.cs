@@ -112,7 +112,7 @@ namespace HZC.MyOrm.Expressions
                             {
                                 return b ? "1=1" : "1=0";
                             }
-                        }
+                        } 
                         var parameterName = GetParameterName();
                         Result.Parameters.Add(parameterName, val);
                         return parameterName;

@@ -6,8 +6,8 @@ using HZC.MyOrm.SqlBuilder;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Linq;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 
 namespace HZC.MyOrm
 {
@@ -36,8 +36,37 @@ namespace HZC.MyOrm
             {
                 conn.Open();
                 command.Connection = conn;
-                var result = command.ExecuteScalar().ToString();
-                entity.Id = Convert.ToInt32(string.IsNullOrWhiteSpace(result) ? "0" : result);
+                var obj = command.ExecuteScalar();
+                if (obj != DBNull.Value)
+                {
+                    entity.Id = Convert.ToInt32(obj);
+                }
+                return entity.Id;
+            }
+        }
+
+        public async Task<int> InsertAsync<T>(T entity) where T : class, IEntity, new()
+        {
+            var entityInfo = MyEntityContainer.Get(typeof(T));
+
+            var sqlBuilder = new SqlServerBuilder();
+            var sql = sqlBuilder.Insert(entityInfo);
+
+            var parameters = new MyDbParameters();
+            parameters.Add(entity);
+
+            var command = new SqlCommand(sql);
+            command.Parameters.AddRange(parameters.Parameters);
+
+            using (var conn = new SqlConnection(_connectionString))
+            {
+                conn.Open();
+                command.Connection = conn;
+                var obj = await command.ExecuteScalarAsync();
+                if (obj != DBNull.Value)
+                {
+                    entity.Id = Convert.ToInt32(obj);
+                }
                 return entity.Id;
             }
         }
@@ -56,30 +85,65 @@ namespace HZC.MyOrm
             {
                 return Insert(entity);
             }
-            else
+
+            var entityInfo = MyEntityContainer.Get(typeof(T));
+            var resolver = new EditConditionResolver<T>(entityInfo);
+            var result = resolver.Resolve(@where.Body);
+            var condition = result.Condition;
+            var parameters = result.Parameters;
+            parameters.Add(entity);
+
+            condition = string.IsNullOrWhiteSpace(condition) ? "1=1" : condition;
+
+            var sqlBuilder = new SqlServerBuilder();
+            var sql = sqlBuilder.InsertIfNotExists(entityInfo, condition);
+            var command = new SqlCommand(sql);
+            command.Parameters.AddRange(parameters.Parameters);
+
+            using (var conn = new SqlConnection(_connectionString))
             {
-                var entityInfo = MyEntityContainer.Get(typeof(T));
-                var resolver = new EditConditionResolver<T>(entityInfo);
-                var result = resolver.Resolve(where.Body);
-                var condition = result.Condition;
-                var parameters = result.Parameters;
-                parameters.Add(entity);
-
-                condition = string.IsNullOrWhiteSpace(condition) ? "1=1" : condition;
-
-                var sqlBuilder = new SqlServerBuilder();
-                var sql = sqlBuilder.InsertIfNotExists(entityInfo, condition);
-                var command = new SqlCommand(sql);
-                command.Parameters.AddRange(parameters.Parameters);
-
-                using (var conn = new SqlConnection(_connectionString))
+                conn.Open();
+                command.Connection = conn;
+                var obj = command.ExecuteScalar();
+                if (obj != DBNull.Value)
                 {
-                    conn.Open();
-                    command.Connection = conn;
-                    var idString = command.ExecuteScalar().ToString();
-                    entity.Id = Convert.ToInt32(string.IsNullOrWhiteSpace(idString) ? "0" : idString);
-                    return entity.Id;
+                    entity.Id = Convert.ToInt32(obj);
                 }
+                return entity.Id;
+            }
+        }
+
+        public async Task<int> InsertIfNotExistsAsync<T>(T entity, Expression<Func<T, bool>> where) where T : class, IEntity, new()
+        {
+            if (where == null)
+            {
+                return Insert(entity);
+            }
+
+            var entityInfo = MyEntityContainer.Get(typeof(T));
+            var resolver = new EditConditionResolver<T>(entityInfo);
+            var result = resolver.Resolve(@where.Body);
+            var condition = result.Condition;
+            var parameters = result.Parameters;
+            parameters.Add(entity);
+
+            condition = string.IsNullOrWhiteSpace(condition) ? "1=1" : condition;
+
+            var sqlBuilder = new SqlServerBuilder();
+            var sql = sqlBuilder.InsertIfNotExists(entityInfo, condition);
+            var command = new SqlCommand(sql);
+            command.Parameters.AddRange(parameters.Parameters);
+
+            using (var conn = new SqlConnection(_connectionString))
+            {
+                conn.Open();
+                command.Connection = conn;
+                var obj = await command.ExecuteScalarAsync();
+                if (obj != DBNull.Value)
+                {
+                    entity.Id = Convert.ToInt32(obj);
+                }
+                return entity.Id;
             }
         }
 
@@ -112,9 +176,56 @@ namespace HZC.MyOrm
                                 var parameters = new MyDbParameters();
                                 parameters.Add(entity);
                                 command.Parameters.AddRange(parameters.Parameters);
-                                var result = command.ExecuteScalar().ToString();
-                                entity.Id = Convert.ToInt32(string.IsNullOrWhiteSpace(result) ? "0" : result);
+                                var obj = command.ExecuteScalar();
+                                if (obj != DBNull.Value)
+                                {
+                                    entity.Id = Convert.ToInt32(obj);
+                                }
                                 count++;
+                            }
+                        }
+                        trans.Commit();
+                    }
+                    catch
+                    {
+                        trans.Rollback();
+                        count = 0;
+                    }
+                }
+            }
+
+            return count;
+        }
+
+        public async Task<int> InsertAsync<T>(List<T> entityList) where T : class, IEntity, new()
+        {
+            var entityInfo = MyEntityContainer.Get(typeof(T));
+
+            var sqlBuilder = new SqlServerBuilder();
+            var sql = sqlBuilder.Insert(entityInfo);
+
+            var count = 0;
+
+            using (var conn = new SqlConnection(_connectionString))
+            {
+                conn.Open();
+                using (var trans = conn.BeginTransaction())
+                {
+                    try
+                    {
+                        foreach (var entity in entityList)
+                        {
+                            using (var command = new SqlCommand(sql, conn, trans))
+                            {
+                                var parameters = new MyDbParameters();
+                                parameters.Add(entity);
+                                command.Parameters.AddRange(parameters.Parameters);
+                                var obj = await command.ExecuteScalarAsync();
+                                if (obj != DBNull.Value)
+                                {
+                                    entity.Id = Convert.ToInt32(obj);
+                                    count++;
+                                }
                             }
                         }
                         trans.Commit();
