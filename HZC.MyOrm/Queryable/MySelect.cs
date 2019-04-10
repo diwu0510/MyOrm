@@ -52,6 +52,28 @@ namespace HZC.MyOrm.Queryable
             return result;
         }
 
+        public List<dynamic> ToListDynamic()
+        {
+
+            var sqlBuilder = new SqlServerBuilder();
+            var sql = sqlBuilder.Select(_table, _fields, _where, _orderBy);
+
+            List<dynamic> result;
+            var visitor = new SqlDataReaderSelectConverter();
+            using (var conn = new SqlConnection(_connectionString))
+            {
+                var command = new SqlCommand(sql, conn);
+                command.Parameters.AddRange(_parameters.Parameters);
+                conn.Open();
+                using (var sdr = command.ExecuteReader())
+                {
+                    result = visitor.ConvertToDynamicList(sdr);
+                }
+            }
+
+            return result;
+        }
+
         public async Task<List<T>> ToListAsync()
         {
 

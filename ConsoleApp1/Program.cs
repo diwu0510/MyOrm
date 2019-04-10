@@ -8,6 +8,7 @@ using HZC.MyOrm.Expressions;
 using System.Collections;
 using System.Collections.Generic;
 using HZC.MyOrm;
+using Newtonsoft.Json;
 
 namespace ConsoleApp1
 {
@@ -104,9 +105,9 @@ namespace ConsoleApp1
             //    Console.WriteLine(property);
             //}
             var db = new MyQueryable<Student>("Data Source=.;Database=Taoxue.Order;User Id=sa;Password=790825");
-            var student = db.Where(s => s.Birthday == null).ToList();
+            var student = db.Where(s => s.Birthday == null).Select<dynamic>(s => new { s.StudentName, s.Id }).ToListDynamic();
 
-
+            Console.WriteLine(JsonConvert.SerializeObject(student));
             Console.ReadLine();
         }
 

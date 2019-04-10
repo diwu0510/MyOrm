@@ -429,7 +429,7 @@ namespace HZC.MyOrm.Queryable
                         var prop = _masterEntity.Properties.Single(p => p.Name == property.PropertyName);
                         if (prop != null)
                         {
-                            sb.Append($",[{_masterEntity.TableName}].[{property.PropertyName}] AS [{property.MemberName}]");
+                            sb.Append($",[{_masterEntity.TableName}].[{prop.FieldName}] AS [{property.MemberName}]");
                         }
                     }
                     else

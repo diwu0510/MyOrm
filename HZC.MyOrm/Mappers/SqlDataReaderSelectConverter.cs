@@ -163,11 +163,53 @@ namespace HZC.MyOrm.Mappers
             }
         }
 
-        public Func<SqlDataReader, dynamic> Resolve2(SqlDataReader sdr)
+        public Func<SqlDataReader, Dictionary<string, object>> ResolveObject(SqlDataReader sdr)
         {
             var sdrParameter = Expression.Parameter(typeof(SqlDataReader), "sdr");
-            var newExpression = Expression.New(typeof(System.Dynamic.ExpandoObject));
-            var convertExpression = Expression.Convert(newExpression, typeof(IDictionary<string, object>));
+
+            var newExpression = Expression.Variable(typeof(Dictionary<string, object>), "dict");
+            var memberBindings = new List<MemberBinding>();
+            
+            var count = sdr.FieldCount;
+            var iExpression = Expression.Variable(typeof(int), "i");
+            var initIExpression = Expression.Assign(iExpression, Expression.Constant(0));
+
+            LabelTarget label = Expression.Label(typeof(Dictionary<string, object>));
+
+            var block2 = Expression.Block(
+                            Expression.Call(
+                                newExpression,
+                                typeof(IDictionary<string, object>).GetMethod("Add"),
+                                Expression.Call(sdrParameter, typeof(SqlDataReader).GetMethod("GetName", new[] { typeof(int) }), iExpression),
+                                Expression.Call(sdrParameter, typeof(SqlDataReader).GetMethod("GetValue", new[] { typeof(int) }), iExpression)),
+                            Expression.PostIncrementAssign(iExpression)
+                        );
+
+            var loop = Expression.Loop(
+                 Expression.IfThenElse(
+                        Expression.LessThan(iExpression, Expression.Constant(count)),
+                        block2,
+                        Expression.Break(label, newExpression)
+                    ),
+                    label
+                );
+
+            var block = Expression.Block(
+                new[] { newExpression, iExpression },
+                initIExpression,
+                Expression.Assign(newExpression, Expression.New(typeof(Dictionary<string, object>))),
+                loop);
+
+            var lambda = Expression.Lambda<Func<SqlDataReader, Dictionary<string, object>>>(block, sdrParameter);
+            return lambda.Compile();
+            //return null;
+        }
+
+        public Func<SqlDataReader, TTarget> Resolve2<TTarget>(SqlDataReader sdr)
+        {
+            var sdrParameter = Expression.Parameter(typeof(SqlDataReader), "sdr");
+            var newExpression = Expression.New(typeof(object));
+            //var convertExpression = Expression.Convert(newExpression, typeof(IDictionary<string, object>));
 
             var memberBindings = new List<MemberBinding>();
             for(var i = 0; i < sdr.FieldCount; i++)
@@ -181,19 +223,19 @@ namespace HZC.MyOrm.Mappers
                 //            Expression.Constant(i));
                 //var type = Expression.Constant(Expression.Call(sdrParameter, typeof(SqlDataReader).GetMethod("GetFieldType", new[] { typeof(int) }), Expression.Constant(i)));
                 var valueExpression = Expression.Call(sdrParameter, typeof(SqlDataReader).GetMethod("GetValue", new[] { typeof(int) }), Expression.Constant(i));
-
+                
                 //var callExpression = Expression.Call(
                 //    convertExpression,
                 //    typeof(IDictionary<string, object>).GetMethod("Add"),
                 //    nameExpression, valueExpression);
 
-                Expression.Call(newExpression,
-                    typeof(System.Dynamic.ExpandoObject).GetMethod("TryAdd", new[] { typeof(string), typeof(object) }),
-                    nameExpression,
-                    valueExpression);
+                //Expression.Call(newExpression,
+                //    typeof(System.Dynamic.ExpandoObject).GetMethod("TryAdd", new[] { typeof(string), typeof(object) }),
+                //    nameExpression,
+                //    valueExpression);
             }
             var initExpression = Expression.MemberInit(newExpression);
-            var lambda = Expression.Lambda<Func<SqlDataReader, dynamic>>(initExpression, sdrParameter);
+            var lambda = Expression.Lambda<Func<SqlDataReader, TTarget>>(initExpression, sdrParameter);
             return lambda.Compile();
         }
 
@@ -205,11 +247,17 @@ namespace HZC.MyOrm.Mappers
                 return result;
             }
 
-            var func = typeof(T).IsClass && typeof(T) != typeof(string) ? ResolveClass<T>(sdr) : ResolveConstant<T>(sdr);
+            //var func = typeof(T).IsClass && typeof(T) != typeof(string) ? ResolveClass<T>(sdr) : ResolveConstant<T>(sdr);
 
-            if (func == null)
+            Func<SqlDataReader, T> func;
+            var type = typeof(T);
+            if (typeof(T).IsClass && typeof(T) != typeof(string))
             {
-                return result;
+                func = ResolveClass<T>(sdr);
+            }
+            else
+            {
+                func = ResolveConstant<T>(sdr);
             }
 
             do
@@ -220,6 +268,26 @@ namespace HZC.MyOrm.Mappers
                 }
             } while (sdr.NextResult());
 
+            return result;
+        }
+
+        public List<dynamic> ConvertToDynamicList(SqlDataReader sdr)
+        {
+            var result = new List<dynamic>();
+            var func = ResolveObject(sdr);
+            do
+            {
+                while (sdr.Read())
+                {
+                    var r = func(sdr);
+                    dynamic rr = new System.Dynamic.ExpandoObject();
+                    foreach(var kv in r)
+                    {
+                        ((IDictionary<string, object>)rr).Add(kv.Key, kv.Value);
+                    }
+                    result.Add(rr);
+                }
+            } while (sdr.NextResult());
             return result;
         }
 
@@ -253,7 +321,7 @@ namespace HZC.MyOrm.Mappers
                 return result;
             }
 
-            var func = Resolve2(sdr);
+            var func = Resolve2<object>(sdr);
 
             if (func == null)
             {
@@ -264,7 +332,8 @@ namespace HZC.MyOrm.Mappers
             {
                 while (sdr.Read())
                 {
-                    result.Add(func(sdr));
+                    var item = func(sdr);
+                    result.Add(item);
                 }
             } while (sdr.NextResult());
 
@@ -278,7 +347,7 @@ namespace HZC.MyOrm.Mappers
                 return null;
             }
 
-            var func = Resolve2(sdr);
+            var func = Resolve2<object>(sdr);
 
             if (func != null && sdr.Read())
             {
