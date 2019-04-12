@@ -96,7 +96,6 @@ namespace HZC.MyOrm.Expressions
         protected Expression VisitNew(NewExpression node)
         {
             _targetType = node.Type;
-            Console.WriteLine(_targetType);
             if (node.Members != null)
             {
                 for (var i = 0; i < node.Members.Count; i++)

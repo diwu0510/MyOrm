@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace HZC.MyOrm.Queryable
 {
-    public class MySelect
+    public class MySelect<T>
     {
         private readonly string _connectionString;
         private readonly string _fields;
@@ -30,13 +30,13 @@ namespace HZC.MyOrm.Queryable
 
         #region 所有数据
 
-        public List<dynamic> ToList()
+        public List<T> ToList()
         {
 
             var sqlBuilder = new SqlServerBuilder();
             var sql = sqlBuilder.Select(_table, _fields, _where, _orderBy);
 
-            List<dynamic> result;
+            List<T> result;
             var visitor = new SqlDataReaderSelectConverter();
             using (var conn = new SqlConnection(_connectionString))
             {
@@ -45,20 +45,20 @@ namespace HZC.MyOrm.Queryable
                 conn.Open();
                 using (var sdr = command.ExecuteReader())
                 {
-                    result = visitor.ConvertToDynamicList(sdr);
+                    result = visitor.ConvertToList<T>(sdr);
                 }
             }
 
             return result;
         }
 
-        public async Task<List<dynamic>> ToListAsync()
+        public async Task<List<T>> ToListAsync()
         {
 
             var sqlBuilder = new SqlServerBuilder();
             var sql = sqlBuilder.Select(_table, _fields, _where, _orderBy);
 
-            List<dynamic> result;
+            List<T> result;
             var visitor = new SqlDataReaderSelectConverter();
             using (var conn = new SqlConnection(_connectionString))
             {
@@ -67,7 +67,7 @@ namespace HZC.MyOrm.Queryable
                 conn.Open();
                 using (var sdr = await command.ExecuteReaderAsync())
                 {
-                    result = visitor.ConvertToDynamicList(sdr);
+                    result = visitor.ConvertToList<T>(sdr);
                 }
             }
 
@@ -78,7 +78,7 @@ namespace HZC.MyOrm.Queryable
 
         #region 分页数据
 
-        public List<dynamic> ToPageList(int pageIndex, int pageSize, out int recordCount)
+        public List<T> ToPageList(int pageIndex, int pageSize, out int recordCount)
         {
             var sqlBuilder = new SqlServerBuilder();
             var sql = sqlBuilder.PagingSelect2008(_table, _fields, _where, _orderBy, pageIndex, pageSize);
@@ -89,7 +89,7 @@ namespace HZC.MyOrm.Queryable
             command.Parameters.Add(param);
 
             recordCount = 0;
-            List<dynamic> result;
+            List<T> result;
 
             using (var conn = new SqlConnection(_connectionString))
             {
@@ -98,7 +98,7 @@ namespace HZC.MyOrm.Queryable
                 using (var sdr = command.ExecuteReader())
                 {
                     var handler = new SqlDataReaderSelectConverter();
-                    result = handler.ConvertToDynamicList(sdr);
+                    result = handler.ConvertToList<T>(sdr);
                 }
             }
 
@@ -106,7 +106,7 @@ namespace HZC.MyOrm.Queryable
             return result;
         }
 
-        public async Task<PagingResult<dynamic>> ToPageListAsync(int pageIndex, int pageSize)
+        public async Task<PagingResult<T>> ToPageListAsync(int pageIndex, int pageSize)
         {
             var sqlBuilder = new SqlServerBuilder();
             var sql = sqlBuilder.PagingSelect2008(_table, _fields, _where, _orderBy, pageIndex, pageSize);
@@ -116,7 +116,7 @@ namespace HZC.MyOrm.Queryable
             var param = new SqlParameter("@RecordCount", SqlDbType.Int) { Direction = ParameterDirection.Output };
             command.Parameters.Add(param);
 
-            var result = new PagingResult<dynamic>();
+            var result = new PagingResult<T>();
 
             using (var conn = new SqlConnection(_connectionString))
             {
@@ -125,7 +125,7 @@ namespace HZC.MyOrm.Queryable
                 using (var sdr = await command.ExecuteReaderAsync())
                 {
                     var handler = new SqlDataReaderSelectConverter();
-                    result.Items = handler.ConvertToDynamicList(sdr);
+                    result.Items = handler.ConvertToList<T>(sdr);
                 }
             }
 
@@ -137,7 +137,7 @@ namespace HZC.MyOrm.Queryable
 
         #region 第一条数据
 
-        public dynamic FirstOrDefault()
+        public T FirstOrDefault()
         {
             var sqlBuilder = new SqlServerBuilder();
             var sql = sqlBuilder.Select(_table, _fields, _where, _orderBy, 1);
@@ -150,11 +150,11 @@ namespace HZC.MyOrm.Queryable
                 var sdr = command.ExecuteReader();
 
                 var handler = new SqlDataReaderSelectConverter();
-                return handler.ConvertToDynamicEntity(sdr);
+                return handler.ConvertToEntity<T>(sdr);
             }
         }
 
-        public async Task<dynamic> FirstOrDefaultAsync()
+        public async Task<T> FirstOrDefaultAsync()
         {
             var sqlBuilder = new SqlServerBuilder();
             var sql = sqlBuilder.Select(_table, _fields, _where, _orderBy, 1);
@@ -167,9 +167,9 @@ namespace HZC.MyOrm.Queryable
                 var sdr = await command.ExecuteReaderAsync();
 
                 var handler = new SqlDataReaderSelectConverter();
-                return handler.ConvertToDynamicEntity(sdr);
+                return handler.ConvertToEntity<T>(sdr);
             }
-        }
+        } 
 
         #endregion
     }

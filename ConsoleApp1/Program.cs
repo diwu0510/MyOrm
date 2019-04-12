@@ -105,10 +105,22 @@ namespace ConsoleApp1
             //    Console.WriteLine(property);
             //}
             var db = new MyQueryable<Student>("Data Source=.;Database=Taoxue.Order;User Id=sa;Password=790825");
-            var student = db.Where(s => s.Birthday == null).Select<dynamic>(s => new { s.StudentName, s.Id }).ToListDynamic();
+            var student = db.Where(s => s.Birthday == null).ToList();
 
             Console.WriteLine(JsonConvert.SerializeObject(student));
+
+            //Show(2017, 5);
+
             Console.ReadLine();
+        }
+
+        static void Show(int year, int month)
+        {
+            var dt = DateTime.Parse($"{year}-{month}-1");
+            for (var start = dt; dt < DateTime.Today; dt = dt.AddMonths(1))
+            {
+                Console.WriteLine($"{dt.Year}-{dt.Month}");
+            }
         }
 
         static bool Check()

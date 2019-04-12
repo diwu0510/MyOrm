@@ -200,6 +200,14 @@ namespace HZC.MyOrm.Queryable
             _selectProperties.AddRange(visitor.GetPropertyList());
             return new MySelect<TTarget>(_connectionString, GetFields(), GetFrom(), _where, _parameters, _orderBy);
         }
+
+        public MySelect Select(Expression<Func<T, object>> expression)
+        {
+            var visitor = new SelectExpressionResolver();
+            visitor.Visit(expression);
+            _selectProperties.AddRange(visitor.GetPropertyList());
+            return new MySelect(_connectionString, GetFields(), GetFrom(), _where, _parameters, _orderBy);
+        }
         
         #endregion
 

@@ -49,7 +49,13 @@ namespace HZC.MyOrm.Reflections
                     KeyColumn = property.FieldName;
                 }
                 Properties.Add(property);
+                MyEntityMapperContainer.Add($"{Name}-{property.Name}", property.FieldName);
             }
+        }
+
+        public string GetFiledName(string propertyName)
+        {
+            return MyEntityMapperContainer.Get(propertyName);
         }
     }
 }
