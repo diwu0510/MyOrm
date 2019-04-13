@@ -262,6 +262,18 @@ namespace HZC.MyOrm
             }
         }
 
+        public int Update<T>(int id, Expression<Func<T, object>> expression)
+        {
+            var kvs = ObjectExpressionResolver.Resolve(expression.Body);
+            return Update<T>(id, kvs);
+        }
+
+        public async Task<int> UpdateAsync<T>(int id, Expression<Func<T, object>> expression)
+        {
+            var kvs = ObjectExpressionResolver.Resolve(expression.Body);
+            return await UpdateAsync<T>(id, kvs);
+        }
+
         /// <summary>
         /// 通过查询条件修改指定列
         /// </summary>
@@ -353,6 +365,18 @@ namespace HZC.MyOrm
                 command.Parameters.AddRange(parameters.ToArray());
                 return await command.ExecuteNonQueryAsync();
             }
+        }
+
+        public int Update<T>(Expression<Func<T, bool>> expression, Expression<Func<T, object>> properties)
+        {
+            var kvs = ObjectExpressionResolver.Resolve(properties.Body);
+            return Update<T>(expression, kvs);
+        }
+
+        public async Task<int> UpdateAsync<T>(Expression<Func<T, bool>> expression, Expression<Func<T, object>> properties)
+        {
+            var kvs = ObjectExpressionResolver.Resolve(properties.Body);
+            return await UpdateAsync<T>(expression, kvs);
         }
 
         /// <summary>

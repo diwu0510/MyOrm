@@ -10,9 +10,11 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <AssemblyName>HZC.MyOrm</AssemblyName>
     <RootNamespace>HZC.MyOrm</RootNamespace>
-    <AssemblyVersion>1.0.0.2</AssemblyVersion>
-    <FileVersion>1.0.0.2</FileVersion>
-    <Version>1.0.2</Version>
+    <AssemblyVersion>1.0.0.3</AssemblyVersion>
+    <FileVersion>1.0.0.3</FileVersion>
+    <Version>1.0.3</Version>
+    <PackageLicenseUrl>https://licenses.nuget.org/MIT</PackageLicenseUrl>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
   </PropertyGroup>
 
   <ItemGroup>
