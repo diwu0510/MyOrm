@@ -92,7 +92,6 @@ namespace HZC.MyOrm.Expressions
                 case ExpressionType.LessThan:
                 case ExpressionType.LessThanOrEqual:
                     return ResolveBinaryClause((BinaryExpression)node);
-
                 default:
                     throw new ArgumentException("不受支持的表达式", nameof(node));
             }
@@ -260,7 +259,7 @@ namespace HZC.MyOrm.Expressions
 
         #endregion
 
-        #region 解析二元表达式
+        #region 解析二元表达式-此方法访问不到，暂时先放着
 
         private string ResolveBinary(BinaryExpression node)
         {
@@ -275,7 +274,7 @@ namespace HZC.MyOrm.Expressions
             }
             else
             {
-                var expression = (BinaryExpression)node;
+                var expression = node;
                 var right = expression.Right;
                 var left = expression.Left;
                 var op = expression.NodeType.ToSqlOperator();

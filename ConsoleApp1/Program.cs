@@ -88,7 +88,8 @@ namespace ConsoleApp1
             //var resolver = new SelectConditionResolver<Student>();
             //var schoolId = 4;
             //var dt = DateTime.Today;
-            //Expression<Func<Student, bool>> expr = s => true && Check() && s.StudentName.Contains("abc") && !s.IsDel && s.School.Id == schoolId && s.CreateAt < dt;
+            ////Expression<Func<Student, bool>> expr = s => true && Check() && s.StudentName.Contains("abc") && !s.IsDel && s.School.Id == schoolId && s.CreateAt < dt;
+            //Expression<Func<Student, bool>> expr = s => s.CreateAt < dt;
             //resolver.Resolve(expr.Body);
 
             //var result = resolver.GetResult();
@@ -104,10 +105,10 @@ namespace ConsoleApp1
             //{
             //    Console.WriteLine(property);
             //}
-            var db = new MyQueryable<Student>("Data Source=.;Database=Taoxue.Order;User Id=sa;Password=790825");
-            var student = db.Where(s => s.Birthday == null).ToList();
+            //var db = new MyQueryable<Student>("Data Source=.;Database=Taoxue.Order;User Id=sa;Password=790825");
+            //var student = db.Where(s => s.Birthday == null).ToList();
 
-            Console.WriteLine(JsonConvert.SerializeObject(student));
+            //Console.WriteLine(JsonConvert.SerializeObject(student));
 
             //Show(2017, 5);
 

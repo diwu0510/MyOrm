@@ -328,6 +328,22 @@ namespace HZC.MyOrm
             }
         }
 
+        public List<dynamic> FetchBySql(string sql, object parameters)
+        {
+            using (var conn = new SqlConnection(_connectionString))
+            {
+                return conn.Fetch(sql, parameters);
+            }
+        }
+
+        public async Task<List<dynamic>> FetchBySqlAsync(string sql, object parameters)
+        {
+            using (var conn = new SqlConnection(_connectionString))
+            {
+                return await conn.FetchAsync<dynamic>(sql, parameters);
+            }
+        }
+
         public T LoadBySql<T>(string sql, object parameters)
         {
             using (var conn = new SqlConnection(_connectionString))

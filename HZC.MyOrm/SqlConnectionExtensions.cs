@@ -94,6 +94,70 @@ namespace HZC.MyOrm
             }
             return new List<T>();
         }
+        
+        public static List<dynamic> Fetch(this SqlConnection conn, string sql, object parameters = null, SqlTransaction trans = null)
+        {
+            try
+            {
+                var command = new SqlCommand(sql, conn, trans);
+                if (parameters != null)
+                {
+                    command.Parameters.AddRange(ConvertToDbParameter(parameters).Parameters);
+                }
+
+                var mapper = new SqlDataReaderSelectConverter();
+                List<dynamic> result;
+
+                using (var sdr = command.ExecuteReader())
+                {
+                    result = mapper.ConvertToDynamicList(sdr);
+                }
+
+                return result;
+            }
+            catch (Exception)
+            {
+                trans?.Rollback();
+            }
+            finally
+            {
+                conn.Close();
+            }
+            return new List<dynamic>();
+        }
+
+
+
+        public static async Task<List<dynamic>> FetchAsync(this SqlConnection conn, string sql, object parameters = null, SqlTransaction trans = null)
+        {
+            try
+            {
+                var command = new SqlCommand(sql, conn, trans);
+                if (parameters != null)
+                {
+                    command.Parameters.AddRange(ConvertToDbParameter(parameters).Parameters);
+                }
+
+                var mapper = new SqlDataReaderSelectConverter();
+                List<dynamic> result;
+
+                using (var sdr = await command.ExecuteReaderAsync())
+                {
+                    result = mapper.ConvertToDynamicList(sdr);
+                }
+
+                return result;
+            }
+            catch (Exception)
+            {
+                trans?.Rollback();
+            }
+            finally
+            {
+                conn.Close();
+            }
+            return new List<dynamic>();
+        }
 
         public static T SingleOrDefault<T>(this SqlConnection conn, string sql, object parameters = null, SqlTransaction trans = null)
         {

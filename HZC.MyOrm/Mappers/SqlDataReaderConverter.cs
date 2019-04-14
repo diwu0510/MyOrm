@@ -265,23 +265,35 @@ namespace HZC.MyOrm.Mappers
             {
                 methodName = "GetString";
             }
-            else if (realType == typeof(int))
+            else if (realType == typeof(int) || realType == typeof(int?))
             {
                 methodName = "GetInt32";
             }
-            else if (realType == typeof(DateTime))
+            else if (realType == typeof(long) || realType == typeof(long?))
+            {
+                methodName = "GetInt64";
+            }
+            else if (realType == typeof(short) || realType == typeof(short?))
+            {
+                methodName = "GetInt16";
+            }
+            else if (realType == typeof(DateTime) || realType == typeof(DateTime?))
             {
                 methodName = "GetDateTime";
             }
-            else if (realType == typeof(decimal))
+            else if (realType == typeof(decimal) || realType == typeof(decimal?))
             {
                 methodName = "GetDecimal";
             }
-            else if (realType == typeof(Guid))
+            else if (realType == typeof(Guid) || realType == typeof(Guid?))
             {
                 methodName = "GetGuid";
             }
-            else if (realType == typeof(bool))
+            else if (realType == typeof(bool) || realType == typeof(bool?))
+            {
+                methodName = "GetBoolean";
+            }
+            else if (realType == typeof(float) || realType == typeof(float?))
             {
                 methodName = "GetBoolean";
             }
