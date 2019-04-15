@@ -6,6 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace WebApplication1.Data
 {
+    [MyTable("Approvals")]
     public class Approval : IEntity
     {
         public Approval()
@@ -149,12 +150,12 @@ namespace WebApplication1.Data
         [MyColumn(UpdateIgnore = true)]
         public DateTime CreateAt { get; set; }
 
-
-
         [Display(Name = "审批结果")]
         public int ApproveResult { get; set; }
 
         [Display(Name = "申请阶段")]
         public int ApproveStep { get; set; }
+
+        public Department Department { get; set; }
     }
 }

@@ -17,6 +17,14 @@ namespace WebApplication1.Services
             _mapper = mapper;
         }
 
+        /// <summary>
+        /// 创建
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <param name="userNo"></param>
+        /// <param name="userName"></param>
+        /// <param name="departmentId"></param>
+        /// <returns></returns>
         public int Create(ApprovalDto dto, string userNo, string userName, int departmentId)
         {
             var entity = _mapper.Map<Approval>(dto);
@@ -30,6 +38,12 @@ namespace WebApplication1.Services
             return _db.Insert(entity);
         }
 
+        /// <summary>
+        /// 编辑
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="dto"></param>
+        /// <returns></returns>
         public int Update(int id, ApprovalDto dto)
         {
             if (dto.Id != id)
@@ -57,6 +71,15 @@ namespace WebApplication1.Services
             return _db.Update(entity);
         }
 
+        /// <summary>
+        /// 第一次审批
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="approverNo"></param>
+        /// <param name="approverName"></param>
+        /// <param name="result"></param>
+        /// <param name="remark"></param>
+        /// <returns></returns>
         public int Approve(int id, string approverNo, string approverName, ApproveResult result, string remark)
         {
             var entity = _db.Load<Approval>(id);
@@ -75,6 +98,12 @@ namespace WebApplication1.Services
             return _db.Update(entity);
         }
 
+        /// <summary>
+        /// 完善资料
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="dto"></param>
+        /// <returns></returns>
         public int Supplement(int id, SupplementDto dto)
         {
             var entity = _db.Load<Approval>(id);
@@ -95,6 +124,15 @@ namespace WebApplication1.Services
             return _db.Update(entity);
         }
 
+        /// <summary>
+        /// 财务审核
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="profit"></param>
+        /// <param name="serviceAmount"></param>
+        /// <param name="userNo"></param>
+        /// <param name="userName"></param>
+        /// <returns></returns>
         public int Audit(int id, decimal profit, decimal serviceAmount, string userNo, string userName)
         {
             var entity = _db.Load<Approval>(id);
@@ -113,6 +151,15 @@ namespace WebApplication1.Services
             return _db.Update(entity);
         }
 
+        /// <summary>
+        /// 确认审批
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="result"></param>
+        /// <param name="remark"></param>
+        /// <param name="userNo"></param>
+        /// <param name="userName"></param>
+        /// <returns></returns>
         public int Confirm(int id, ApproveResult result, string remark, string userNo, string userName)
         {
             var entity = _db.Load<Approval>(id);

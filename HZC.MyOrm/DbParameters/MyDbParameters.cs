@@ -1,5 +1,6 @@
 ﻿using HZC.MyOrm.Commons;
 using HZC.MyOrm.Reflections;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -33,7 +34,7 @@ namespace HZC.MyOrm.DbParameters
                 var list = new List<SqlParameter>();
                 foreach (var item in _dict)
                 {
-                    var param = new SqlParameter(item.Name, item.Value);
+                    var param = new SqlParameter(item.Name, ResolveParameterValue(item.Value));
                     if (item.Direction != null)
                     {
                         param.Direction = item.Direction.Value;
@@ -49,7 +50,7 @@ namespace HZC.MyOrm.DbParameters
         {
             parameterName = parameterName.StartsWith(_prefix) ? parameterName : _prefix + parameterName;
             var item = _dict.FirstOrDefault(d => d.Name == parameterName);
-            var newItem = new MyDbParameter {Name = parameterName, Value = value};
+            var newItem = new MyDbParameter {Name = parameterName, Value = ResolveParameterValue(value) };
 
             if (item == null)
             {
@@ -65,7 +66,7 @@ namespace HZC.MyOrm.DbParameters
         {
             parameterName = parameterName.StartsWith(_prefix) ? parameterName : _prefix + parameterName;
             var item = _dict.FirstOrDefault(d => d.Name == parameterName);
-            var newItem = new MyDbParameter { Name = parameterName, Value = value, Direction = direction};
+            var newItem = new MyDbParameter { Name = parameterName, Value = ResolveParameterValue(value), Direction = direction};
 
             if (item == null)
             {
@@ -97,7 +98,7 @@ namespace HZC.MyOrm.DbParameters
                 foreach (var property in properties.Where(p => p.PropertyType.IsValueType || 
                                                                p.PropertyType == typeof(string)))
                 {
-                    Add(_prefix + property.Name, property.GetValue(obj));
+                    Add(_prefix + property.Name, ResolveParameterValue(property.GetValue(obj)));
                 }
             }
         }
@@ -112,7 +113,7 @@ namespace HZC.MyOrm.DbParameters
 
         public void Add(SqlParameter parameter)
         {
-            Add(parameter.ParameterName, parameter.Value);
+            Add(parameter.ParameterName, ResolveParameterValue(parameter.Value));
         }
 
         public void Add(SqlParameter[] parameters)
@@ -121,6 +122,15 @@ namespace HZC.MyOrm.DbParameters
             {
                 Add(item);
             }
+        }
+
+        private object ResolveParameterValue(object val)
+        {
+            if(val == null)
+            {
+                return DBNull.Value;
+            }
+            return val;
         }
     }
 }

@@ -126,8 +126,6 @@ namespace HZC.MyOrm
             return new List<dynamic>();
         }
 
-
-
         public static async Task<List<dynamic>> FetchAsync(this SqlConnection conn, string sql, object parameters = null, SqlTransaction trans = null)
         {
             try
