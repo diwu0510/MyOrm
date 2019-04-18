@@ -34,11 +34,7 @@ namespace WebApplication1.Models
         public string Collections { get; set; }
 
         [Display(Name = "完成时间")]
-        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd HH:mm}")]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}")]
         public DateTime? CompleteAt { get; set; }
-
-        [Display(Name = "核算利润")]
-        [Column(TypeName = "decimal(10, 2)")]
-        public decimal AuditProfit { get; set; }
     }
 }

@@ -1,0 +1,257 @@
+﻿@model IEnumerable<WebApplication1.Data.Approval>
+
+@{
+    ViewData["Title"] = "Approved";
+}
+
+<h2>Approved</h2>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ApplicantNo)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ApplicantName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DepartmentId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CustomerUnit)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CustomerName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CustomerJob)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ContactNumber)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ProjectName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ExpectedClosingDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ExpectedClosingCost)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ExpectedClosingProfit)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AppliedAmount)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AppliedReason)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ApproveRemark)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ApproverNo)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ApproverName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ApproveAt)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.OrderNo)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IsHasInvoice)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TaxPoint)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PaymentInfo)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ActualClosingAmount)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ActualClosingProfit)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Collections)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CompleteAt)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AuditProfit)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ActualServiceAmount)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AuditorNo)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AuditorName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AuditAt)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ConfirmNo)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ConfirmName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ConfirmRemark)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ConfirmAt)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CreateAt)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ApproveResult)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ApproveStep)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ApplicantNo)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ApplicantName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DepartmentId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CustomerUnit)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CustomerName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CustomerJob)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ContactNumber)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ProjectName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ExpectedClosingDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ExpectedClosingCost)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ExpectedClosingProfit)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AppliedAmount)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AppliedReason)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ApproveRemark)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ApproverNo)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ApproverName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ApproveAt)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.OrderNo)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsHasInvoice)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TaxPoint)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PaymentInfo)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ActualClosingAmount)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ActualClosingProfit)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Collections)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CompleteAt)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AuditProfit)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ActualServiceAmount)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AuditorNo)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AuditorName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AuditAt)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ConfirmNo)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ConfirmName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ConfirmRemark)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ConfirmAt)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CreateAt)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ApproveResult)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ApproveStep)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

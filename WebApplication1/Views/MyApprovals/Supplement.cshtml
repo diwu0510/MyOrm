@@ -1,0 +1,68 @@
+﻿@model WebApplication1.Models.SupplementDto
+
+@{
+    ViewData["Title"] = "Supplement";
+}
+
+<h2>Supplement</h2>
+
+<h4>SupplementDto</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Supplement">
+            <input asp-for="Id" type="hidden" />
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="OrderNo" class="control-label"></label>
+                <textarea asp-for="OrderNo" class="form-control"></textarea>
+                <span asp-validation-for="OrderNo" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <div class="checkbox">
+                    <label>
+                        <input asp-for="IsHasInvoice" /> @Html.DisplayNameFor(model => model.IsHasInvoice)
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label asp-for="TaxPoint" class="control-label"></label>
+                <input asp-for="TaxPoint" class="form-control" />
+                <span asp-validation-for="TaxPoint" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PaymentInfo" class="control-label"></label>
+                <textarea asp-for="PaymentInfo" class="form-control"></textarea>
+                <span asp-validation-for="PaymentInfo" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ActualClosingAmount" class="control-label"></label>
+                <input asp-for="ActualClosingAmount" type="number" class="form-control" />
+                <span asp-validation-for="ActualClosingAmount" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ActualClosingProfit" class="control-label"></label>
+                <input asp-for="ActualClosingProfit" type="number" class="form-control" />
+                <span asp-validation-for="ActualClosingProfit" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Collections" class="control-label"></label>
+                <textarea asp-for="Collections" class="form-control"></textarea>
+                <span asp-validation-for="Collections" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CompleteAt" class="control-label"></label>
+                <input asp-for="CompleteAt" type="date" class="form-control" />
+                <span asp-validation-for="CompleteAt" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+

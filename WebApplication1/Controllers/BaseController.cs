@@ -2,23 +2,29 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
+using WebApplication1.Models;
 
 namespace WebApplication1.Controllers
 {
     public class BaseController : Controller
     {
-        protected AppUser CurrentUser
+        public UserDto CurrentUser
         {
             get
             {
-                return new AppUser
+                if (User != null && User.Identity.IsAuthenticated)
                 {
-                    Id = 1,
-                    No = "hanzuochao",
-                    Name = "韩作超",
-                    DepartmentId = 1
-                };
+                    return new UserDto
+                    {
+                        No = User.FindFirst(ClaimTypes.NameIdentifier).Value,
+                        Name = User.FindFirst(ClaimTypes.Name).Value,
+                        DepartmentId = int.Parse(User.FindFirst("Department").Value)
+                    };
+                }
+
+                return null;
             }
         }
     }

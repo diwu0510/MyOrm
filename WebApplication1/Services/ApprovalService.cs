@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using HZC.MyOrm;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using WebApplication1.Data;
 using WebApplication1.Models;
 
@@ -77,10 +79,10 @@ namespace WebApplication1.Services
         /// <param name="id"></param>
         /// <param name="approverNo"></param>
         /// <param name="approverName"></param>
-        /// <param name="result"></param>
+        /// <param name="isPass"></param>
         /// <param name="remark"></param>
         /// <returns></returns>
-        public int Approve(int id, string approverNo, string approverName, ApproveResult result, string remark)
+        public int Approve(int id, string approverNo, string approverName, bool isPass, string remark)
         {
             var entity = _db.Load<Approval>(id);
             if (entity == null)
@@ -91,7 +93,7 @@ namespace WebApplication1.Services
             entity.ApproverNo = approverNo;
             entity.ApproverName = approverName;
             entity.ApproveRemark = remark;
-            entity.ApproveResult = (int) result;
+            entity.ApproveResult = isPass ? (int)ApproveResult.ApprovePass : (int)ApproveResult.ApproveRefuse;
             entity.ApproveAt = DateTime.Now;
             entity.ApproveStep = (int)ApproveStep.Approved;
 
@@ -155,12 +157,12 @@ namespace WebApplication1.Services
         /// 确认审批
         /// </summary>
         /// <param name="id"></param>
-        /// <param name="result"></param>
+        /// <param name="isPass"></param>
         /// <param name="remark"></param>
         /// <param name="userNo"></param>
         /// <param name="userName"></param>
         /// <returns></returns>
-        public int Confirm(int id, ApproveResult result, string remark, string userNo, string userName)
+        public int Confirm(int id, bool isPass, string remark, string userNo, string userName)
         {
             var entity = _db.Load<Approval>(id);
             if (entity == null)
@@ -168,7 +170,7 @@ namespace WebApplication1.Services
                 return 0;
             }
 
-            entity.ApproveResult = (int) result;
+            entity.ApproveResult = isPass ? (int) ApproveResult.ConfirmPass : (int) ApproveResult.ConfirmRefuse;
             entity.ConfirmRemark = remark;
             entity.ConfirmNo = userNo;
             entity.ConfirmName = userName;
@@ -176,6 +178,110 @@ namespace WebApplication1.Services
             entity.ApproveStep = (int) ApproveStep.Confirmed;
 
             return _db.Update(entity);
+        }
+
+        #region 我的申请
+        // 我的申请
+        public List<Approval> MyApprovals(string userNo, int pageIndex, out int total)
+        {
+            pageIndex = pageIndex <= 0 ? 1 : pageIndex;
+            var list = _db.Query<Approval>()
+                .Where(a => a.ApplicantNo == userNo)
+                .ToPageList(pageIndex, 20, out var count);
+            total = count;
+            return list;
+        }
+
+        // 待审批的申请
+        public List<Approval> MyWaitingApproveApprovals(string userNo, int pageIndex, out int total)
+        {
+            pageIndex = pageIndex <= 0 ? 1 : pageIndex;
+            var list = _db.Query<Approval>()
+                .Where(a => a.ApplicantNo == userNo && a.ApproveStep == 0)
+                .ToPageList(pageIndex, 20, out var count);
+            total = count;
+            return list;
+        }
+
+        // 已审批的申请
+        public List<Approval> MyApprovedApprovals(string userNo, int pageIndex, out int total)
+        {
+            pageIndex = pageIndex <= 0 ? 1 : pageIndex;
+            var list = _db.Query<Approval>()
+                .Where(a => a.ApplicantNo == userNo && a.ApproveStep == (int) ApproveStep.Approved)
+                .ToPageList(pageIndex, 20, out var count);
+            total = count;
+            return list;
+        }
+
+        // 已审核的申请
+        public List<Approval> MyAuditedApprovals(string userNo, int pageIndex, out int total)
+        {
+            pageIndex = pageIndex <= 0 ? 1 : pageIndex;
+            var list = _db.Query<Approval>()
+                .Where(a => a.ApplicantNo == userNo && a.ApproveStep == (int)ApproveStep.Audited)
+                .ToPageList(pageIndex, 20, out var count);
+            total = count;
+            return list;
+        }
+
+        // 已确认的申请
+        public List<Approval> MyConfirmedApprovals(string userNo, int pageIndex, out int total)
+        {
+            pageIndex = pageIndex <= 0 ? 1 : pageIndex;
+            var list = _db.Query<Approval>()
+                .Where(a => a.ApplicantNo == userNo && a.ApproveStep == (int)ApproveStep.Confirmed)
+                .ToPageList(pageIndex, 20, out var count);
+            total = count;
+            return list;
+        }
+        #endregion
+
+        #region 我审批的申请
+
+        // 所有申请
+        public List<Approval> DepartmentApprovals(int departmentId, int pageIndex, out int total)
+        {
+            pageIndex = pageIndex <= 0 ? 1 : pageIndex;
+            var list = _db.Query<Approval>()
+                .Where(a => a.DepartmentId == departmentId)
+                .ToPageList(pageIndex, 20, out var count);
+            total = count;
+            return list;
+        }
+
+        // 要我审批的
+        public List<Approval> DepartmentWaitingApproveApprovals(int departmentId, int pageIndex, out int total)
+        {
+            pageIndex = pageIndex <= 0 ? 1 : pageIndex;
+            var list = _db.Query<Approval>()
+                .Where(a => a.DepartmentId == departmentId && a.ApproveStep == 0)
+                .ToPageList(pageIndex, 20, out var count);
+            total = count;
+            return list;
+        }
+
+        // 要我确认的
+        public List<Approval> DepartmentWaitingConfirmApprovals(int departmentId, int pageIndex, out int total)
+        {
+            pageIndex = pageIndex <= 0 ? 1 : pageIndex;
+            var list = _db.Query<Approval>()
+                .Where(a => a.DepartmentId == departmentId && a.ApproveStep == (int)ApproveStep.Audited)
+                .ToPageList(pageIndex, 20, out var count);
+            total = count;
+            return list;
+        }
+        #endregion
+
+        // 需要财务审核的
+        public List<Approval> WaitingAuditApprovals(int pageIndex, out int total)
+        {
+            pageIndex = pageIndex <= 0 ? 1 : pageIndex;
+            var list = _db.Query<Approval>()
+                .Where(a => a.ApproveStep == (int)ApproveStep.Approved)
+                .ToPageList(pageIndex, 20, out var count);
+            total = count;
+            return list;
         }
     }
 }

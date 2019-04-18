@@ -1,0 +1,98 @@
+﻿@using WebApplication1.Data
+@using WebApplication1.Services
+@model ApproveModel
+
+@{
+    ViewData["Title"] = "Confirm";
+    var approval = (Approval) ViewBag.Entity;
+}
+
+<h2>Confirm</h2>
+
+<div>
+    <h4>Approval</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>申请人</dt>
+        <dd>@approval.ApplicantName</dd>
+        <dt>客户单位</dt>
+        <dd>@approval.CustomerUnit</dd>
+        <dt>联系人</dt>
+        <dd>[@approval.CustomerJob] @approval.CustomerName - @approval.ContactNumber</dd>
+        <dt>项目</dt>
+        <dd>@approval.ProjectName</dd>
+        <dt>预计完成日期</dt>
+        <dd>@approval.ExpectedClosingDate:yyyy-MM-dd</dd>
+        <dt>预计成交金额</dt>
+        <dd>@approval.ExpectedClosingCost</dd>
+        <dt>预期利润</dt>
+        <dd>@approval.ExpectedClosingProfit</dd>
+        <dt>申请金额</dt>
+        <dd>@approval.AppliedAmount</dd>
+        <dt>申请原因</dt>
+        <dd>@approval.AppliedReason</dd>
+        <dt>审批人</dt>
+        <dd>@approval.ApproverName</dd>
+        <dt>审批备注</dt>
+        <dd>@approval.ApproveRemark</dd>
+        <dt>审批时间</dt>
+        <dd>@approval.ApproveAt?.ToString("yyyy-MM-dd HH:mm") ?? ""</dd>
+        <dt>订单编号</dt>
+        <dd>@approval.OrderNo</dd>
+        <dt>税点</dt>
+        <dd>@approval.TaxPoint</dd>
+        <dt>付款信息</dt>
+        <dd>@approval.PaymentInfo</dd>
+        <dt>实际成交金额</dt>
+        <dd>@approval.ActualClosingAmount</dd>
+        <dt>实际成交利润</dt>
+        <dd>@approval.ActualClosingProfit</dd>
+        <dt>回款记录</dt>
+        <dd>@approval.Collections</dd>
+        <dt>完成日期</dt>
+        <dd>@approval.CompleteAt?.ToString("yyyy-MM-dd")</dd>
+        <dt>财务审核利润</dt>
+        <dd>@approval.AuditProfit</dd>
+        <dt>实际服务费</dt>
+        <dd>@approval.ActualServiceAmount</dd>
+        <dt>财务审核人</dt>
+        <dd>@approval.AuditorName</dd>
+        <dt>财务审核日期</dt>
+        <dd>@approval.AuditAt?.ToString("yyyy-MM-dd HH:mm")</dd>
+        <dt>第二次审批人</dt>
+        <dd>@approval.ConfirmName</dd>
+        <dt>第二次审批备注</dt>
+        <dd>@approval.ConfirmRemark</dd>
+        <dt>第二次审批时间</dt>
+        <dd>@approval.ConfirmAt?.ToString("yyyy-MM-dd HH:mm")</dd>
+        <dt>审批结果</dt>
+        <dd>@ApproveResultUtil.GetDescription(approval.ApproveResult)</dd>
+        <dt>当前步骤</dt>
+        <dd>@ApproveStepUtil.GetDescription(approval.ApproveStep)</dd>
+        <dt>创建时间</dt>
+        <dd>@approval.CreateAt.ToString("yyyy-MM-dd HH:mm")</dd>
+    </dl>
+</div>
+
+<form asp-action="Confirm">
+    <input asp-for="Id" type="hidden" />
+    <div class="form-group">
+        <label class="control-label">审批结果</label>
+        <select asp-for="IsPass" class="form-control">
+            <option value="true">通过</option>
+            <option value="false">拒绝</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label class="control-label">审批说明</label>
+        <textarea asp-for="Remark" class="form-control"></textarea>
+    </div>
+    <div class="form-group">
+        <input type="submit" value="Save" class="btn btn-default" />
+    </div>
+</form>
+
+<div>
+    @Html.ActionLink("Edit", "Edit", new { /* id = Model.PrimaryKey */ }) |
+    <a asp-action="Index">Back to List</a>
+</div>

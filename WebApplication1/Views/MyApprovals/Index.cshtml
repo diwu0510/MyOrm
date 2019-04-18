@@ -1,0 +1,74 @@
+﻿@model IEnumerable<WebApplication1.Data.Approval>
+@using WebApplication1.Services
+
+@{
+    ViewData["Title"] = "我的申请";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ProjectName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CustomerUnit)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CustomerName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CreateAt)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ApproveResult)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ApproveStep)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Id)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ProjectName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CustomerUnit)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CustomerName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CreateAt)
+                </td>
+                <td>
+                    @ApproveResultUtil.GetDescription(item.ApproveResult)
+                </td>
+                <td>
+                    @ApproveStepUtil.GetDescription(item.ApproveStep)
+                </td>
+                <td>
+                    @if (item.ApproveStep == (int)ApproveStep.Approved)
+                    {
+                        @Html.ActionLink("完善资料", "Supplement", new { id = item.Id })
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

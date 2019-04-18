@@ -1,7 +1,9 @@
-﻿@model WebApplication1.Data.Approval
+﻿@using WebApplication1.Data
+@model ApproveModel
 
 @{
     ViewData["Title"] = "Approve";
+    var approval = (Approval)ViewBag.Entity;
 }
 
 <h2>Approve</h2>
@@ -11,232 +13,58 @@
     <hr />
     <dl class="dl-horizontal">
         <dt>
-            @Html.DisplayNameFor(model => model.Id)
+            申请人
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.Id)
+            @approval.ApplicantName
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.ApplicantNo)
+            客户单位
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.ApplicantNo)
+            @approval.CustomerUnit
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.ApplicantName)
+            联系人
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.ApplicantName)
+            【@approval.CustomerJob】@approval.CustomerName - @approval.ContactNumber
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.DepartmentId)
+            项目
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.DepartmentId)
+            @approval.ProjectName
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.CustomerUnit)
+            预计完成日期
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.CustomerUnit)
+            @approval.ExpectedClosingDate:yyyy-MM-dd
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.CustomerName)
+            预计成交金额
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.CustomerName)
+            @approval.ExpectedClosingCost
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.CustomerJob)
+            预期利润
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.CustomerJob)
+            @approval.ExpectedClosingProfit
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.ContactNumber)
+            申请金额
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.ContactNumber)
+            @approval.AppliedAmount
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.ProjectName)
+            申请原因
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.ProjectName)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.ExpectedClosingDate)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.ExpectedClosingDate)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.ExpectedClosingCost)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.ExpectedClosingCost)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.ExpectedClosingProfit)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.ExpectedClosingProfit)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.AppliedAmount)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.AppliedAmount)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.AppliedReason)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.AppliedReason)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.ApproveRemark)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.ApproveRemark)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.ApproverNo)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.ApproverNo)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.ApproverName)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.ApproverName)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.ApproveAt)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.ApproveAt)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.OrderNo)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.OrderNo)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.IsHasInvoice)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.IsHasInvoice)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.TaxPoint)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.TaxPoint)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.PaymentInfo)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.PaymentInfo)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.ActualClosingAmount)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.ActualClosingAmount)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.ActualClosingProfit)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.ActualClosingProfit)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Collections)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Collections)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.CompleteAt)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.CompleteAt)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.AuditProfit)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.AuditProfit)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.ActualServiceAmount)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.ActualServiceAmount)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.AuditorNo)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.AuditorNo)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.AuditorName)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.AuditorName)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.AuditAt)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.AuditAt)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.ConfirmNo)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.ConfirmNo)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.ConfirmName)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.ConfirmName)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.ConfirmRemark)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.ConfirmRemark)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.ConfirmAt)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.ConfirmAt)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.CreateAt)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.CreateAt)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.ApproveResult)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.ApproveResult)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.ApproveStep)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.ApproveStep)
+            @approval.AppliedReason
         </dd>
     </dl>
 </div>
@@ -244,14 +72,14 @@
     <input asp-for="Id" type="hidden" />
     <div class="form-group">
         <label class="control-label">审批结果</label>
-        <select name="Result" class="form-control">
-            <option value="1">通过</option>
-            <option value="2">拒绝</option>
+        <select asp-for="IsPass" class="form-control">
+            <option value="true">通过</option>
+            <option value="false">拒绝</option>
         </select>
     </div>
     <div class="form-group">
         <label class="control-label">审批说明</label>
-        <textarea class="form-control" name="Remark"></textarea>
+        <textarea asp-for="Remark" class="form-control"></textarea>
     </div>
     <div class="form-group">
         <input type="submit" value="Save" class="btn btn-default" />

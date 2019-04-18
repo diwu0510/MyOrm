@@ -12,6 +12,10 @@ namespace WebApplication1.Models
         public CustomerProfile()
         {
             CreateMap<Approval, ApprovalDto>().ReverseMap();
+
+            CreateMap<Approval, SupplementDto>().ReverseMap();
+
+            CreateMap<Approval, AuditModel>();
         }
     }
 }

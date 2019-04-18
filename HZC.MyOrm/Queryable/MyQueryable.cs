@@ -394,11 +394,11 @@ namespace HZC.MyOrm.Queryable
                 if (_includeProperties.Count > 0)
                 {
                     var sb = new StringBuilder(masterFields);
-                    sb.Append(",");
-                    var includeProperties = _includeProperties.OrderBy(i => i);
+                    var includeProperties = _includeProperties.OrderBy(i => i.PropertyName);
 
                     foreach (var property in includeProperties)
                     {
+                        sb.Append(",");
                         var prop = _masterEntity.Properties.Single(p => p.Name == property.PropertyName);
                         var propEntity = GetIncludePropertyEntityInfo(prop.PropertyInfo.PropertyType);
                         if (property.FieldList.Count == 0)
