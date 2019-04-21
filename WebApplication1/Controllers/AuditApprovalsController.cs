@@ -1,17 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using HZC.MyOrm;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using WebApplication1.Data;
+using WebApplication1.Extensions;
 using WebApplication1.Models;
 using WebApplication1.Services;
 
 namespace WebApplication1.Controllers
 {
+    [WeixinUser("audit")]
     public class AuditApprovalsController : BaseController
     {
         private readonly ApprovalService _service;
@@ -52,10 +50,10 @@ namespace WebApplication1.Controllers
                 return Content("已关闭、已完成或未审批的申请，禁止编辑");
             }
 
-            if (entity.ApplicantNo != CurrentUser.No)
-            {
-                return Content("申请人与当前账户不一致，禁止编辑");
-            }
+            //if (entity.ApplicantNo != CurrentUser.No)
+            //{
+            //    return Content("申请人与当前账户不一致，禁止编辑");
+            //}
 
             ViewBag.Entity = entity;
 

@@ -1,12 +1,13 @@
-﻿@model WebApplication1.Models.SupplementDto
+﻿@using WebApplication1.Data
+@model WebApplication1.Models.SupplementDto
 
 @{
-    ViewData["Title"] = "Supplement";
+    ViewData["Title"] = "项目执行详情";
+    var approval = (Approval)ViewBag.Entity;
 }
 
-<h2>Supplement</h2>
-
-<h4>SupplementDto</h4>
+<h2>@approval.CustomerUnit</h2>
+<h4>@approval.ProjectName</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -15,7 +16,7 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="OrderNo" class="control-label"></label>
-                <textarea asp-for="OrderNo" class="form-control"></textarea>
+                <textarea asp-for="OrderNo" class="form-control" rows="4"></textarea>
                 <span asp-validation-for="OrderNo" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -32,7 +33,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="PaymentInfo" class="control-label"></label>
-                <textarea asp-for="PaymentInfo" class="form-control"></textarea>
+                <textarea asp-for="PaymentInfo" class="form-control" rows="4"></textarea>
                 <span asp-validation-for="PaymentInfo" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -47,7 +48,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="Collections" class="control-label"></label>
-                <textarea asp-for="Collections" class="form-control"></textarea>
+                <textarea asp-for="Collections" class="form-control" rows="4"></textarea>
                 <span asp-validation-for="Collections" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -56,13 +57,15 @@
                 <span asp-validation-for="CompleteAt" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-default" />
+                <div class="col-md-6 col-xs-6">
+                    <a asp-action="Index" asp-route-id="@Model.Id" class="btn btn-link">返回列表</a>
+                </div>
+                <div class="col-md-6 col-xs-6 text-right">
+                    <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-default">查看详情</a>
+                    <input type="submit" value="提交" class="btn btn-primary"/>
+                </div>
             </div>
         </form>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
 </div>
 

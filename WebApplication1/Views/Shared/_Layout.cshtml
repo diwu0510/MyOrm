@@ -15,6 +15,7 @@
               asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
         <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
     </environment>
+    @RenderSection("Head", required: false)
 </head>
 <body>
     <nav class="navbar navbar-inverse navbar-fixed-top">
@@ -40,8 +41,19 @@
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
-                    <li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
-                    <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
+                    <li><a asp-area="" asp-controller="MyApprovals" asp-action="Index">申请</a></li>
+                    <li><a asp-area="" asp-controller="DepartmentApprovals" asp-action="Index">审批</a></li>
+                    <li><a asp-area="" asp-controller="AuditApprovals" asp-action="Index">财务</a></li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" airea-haspopup="true"
+                           aria-explanded="false">管理员 <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a asp-area="" asp-controller="Departments" asp-action="Index">部门管理</a></li>
+                            <li><a asp-area="" asp-controller="AppUsers" asp-action="Index">用户管理</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li><a asp-area="" asp-controller="Approvals" asp-action="Index">审批列表</a></li>
+                        </ul>
+                    </li>
                 </ul>
             </div>
         </div>

@@ -1,0 +1,124 @@
+﻿@using WebApplication1.Services
+@model WebApplication1.Data.Approval
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+@section Head
+    {
+    <style>
+        .dl-horizontal dt {
+            float: left;
+            width: 110px;
+            clear: left;
+            text-align: right;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            line-height: 2.4;
+        }
+
+        .dl-horizontal dd {
+            margin-left: 130px;
+            line-height: 2.4;
+        }
+
+        h4.sub-title {
+            background-color: #f3f3f3;
+            color: darkslategrey;
+        }
+    </style>
+}
+
+<h2>@Model.CustomerUnit</h2>
+<div>
+    <h4>@Model.ProjectName</h4>
+    <h4>
+        <span class="label label-primary">@ApproveStepUtil.GetDescription(Model.ApproveStep)</span>
+        <span class="label label-success">@ApproveResultUtil.GetDescription(Model.ApproveResult)</span>
+    </h4>
+    <hr />
+    <div>
+        <h4 class="sub-title">申请内容</h4>
+        <dl class="dl-horizontal">
+            <dt>客户信息</dt>
+            <dd>[@Model.CustomerJob] @Model.CustomerName - @Model.ContactNumber</dd>
+            @*<dt>项目</dt>
+                <dd>@Model.ProjectName</dd>*@
+            <dt>预计完成日期</dt>
+            <dd>@Model.ExpectedClosingDate?.ToString("yyyy-MM-dd")</dd>
+            <dt>预计成交金额</dt>
+            <dd>@Model.ExpectedClosingCost</dd>
+            <dt>预期利润</dt>
+            <dd>@Model.ExpectedClosingProfit</dd>
+            <dt>申请金额</dt>
+            <dd>@Model.AppliedAmount</dd>
+            <dt>申请原因</dt>
+            <dd>@Model.AppliedReason</dd>
+            <dt>申请时间</dt>
+            <dd>@Model.CreateAt.ToString("yyyy-MM-dd HH:mm")</dd>
+        </dl>
+    </div>
+
+    <div>
+        <h4 class="sub-title">第一次审批</h4>
+        <dl class="dl-horizontal">
+            <dt>审批人</dt>
+            <dd>@Model.ApproverName</dd>
+            <dt>审批时间</dt>
+            <dd>@Model.ApproveAt?.ToString("yyyy-MM-dd HH:mm")</dd>
+            <dt>审批备注</dt>
+            <dd>@Model.ApproveRemark</dd>
+        </dl>
+    </div>
+
+    <div>
+        <h4 class="sub-title">项目执行情况</h4>
+        <dl class="dl-horizontal">
+            <dt>订单编号</dt>
+            <dd>@Model.OrderNo</dd>
+            <dt>税点</dt>
+            <dd>@Model.TaxPoint</dd>
+            <dt>付款信息</dt>
+            <dd>@Model.PaymentInfo</dd>
+            <dt>实际成交金额</dt>
+            <dd>@Model.ActualClosingAmount</dd>
+            <dt>实际成交利润</dt>
+            <dd>@Model.ActualClosingProfit</dd>
+            <dt>回款记录</dt>
+            <dd>@Model.Collections</dd>
+            <dt>完成日期</dt>
+            <dd>@Model.CompleteAt?.ToString("yyyy-MM-dd")</dd>
+        </dl>
+    </div>
+
+    <div>
+        <h4 class="sub-title">财务审核</h4>
+        <dl class="dl-horizontal">
+            <dt>财务审核利润</dt>
+            <dd>@Model.AuditProfit</dd>
+            <dt>实际服务费</dt>
+            <dd>@Model.ActualServiceAmount</dd>
+            <dt>财务审核人</dt>
+            <dd>@Model.AuditorName</dd>
+            <dt>财务审核日期</dt>
+            <dd>@Model.AuditAt?.ToString("yyyy-MM-dd HH:mm")</dd>
+        </dl>
+    </div>
+
+    <div>
+        <h4 class="sub-title">第二次审批</h4>
+        <dl class="dl-horizontal">
+            <dt>第二次审批人</dt>
+            <dd>@Model.ConfirmName</dd>
+            <dt>第二次审批备注</dt>
+            <dd>@Model.ConfirmRemark</dd>
+            <dt>第二次审批时间</dt>
+            <dd>@Model.ConfirmAt?.ToString("yyyy-MM-dd HH:mm")</dd>
+        </dl>
+    </div>
+    <div class="text-right">
+        <a href="javascript:window.history.go(-1)">返回</a>
+    </div>
+</div>

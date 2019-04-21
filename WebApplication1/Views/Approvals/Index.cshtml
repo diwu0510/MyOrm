@@ -1,110 +1,165 @@
-﻿@model IEnumerable<WebApplication1.Data.Approval>
+﻿@using WebApplication1.Services
+@model ApprovalResult
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "申请列表";
 }
 
-<h2>Index</h2>
+@section Head {
+    <style>
+        .panel-search {
+            padding: 5px 10px;
+            background-color: #f9f9f9;
+            margin-bottom: 10px;
+            border: 1px #ddd solid;
+            border-radius: 4px;
+        }
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Id)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ApplicantNo)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ApplicantName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DepartmentId)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CustomerUnit)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CustomerName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CustomerJob)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ContactNumber)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ProjectName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ExpectedClosingDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ExpectedClosingCost)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ExpectedClosingProfit)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.AppliedAmount)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.AppliedReason)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ApplicantName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Department.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CustomerUnit)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CustomerName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CustomerJob)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ContactNumber)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ProjectName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ExpectedClosingDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ExpectedClosingCost)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ExpectedClosingProfit)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.AppliedAmount)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.AppliedReason)
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new {  id=item.Id }) |
-                @Html.ActionLink("审批", "Approve", new {  id=item.Id }) |
-                @Html.ActionLink("Delete", "Delete", new {  id=item.Id })
-            </td>
-        </tr>
+        .panel-search .col-md-3 {
+            margin: 5px 0;
+        }
+
+        .label-light-gray {
+            background-color: #f3f3f3;
+            color: #444;
+        }
+
+        .pager { margin: 0;}
+    </style>
 }
-    </tbody>
-</table>
+
+<h2>@ViewData["Title"]</h2>
+
+<div class="panel-search">
+    <form method="get">
+        <input type="hidden" id="id" name="id" value="@ViewBag.PageIndex" />
+        <input type="hidden" id="pages" name="pages" value="@ViewBag.PageCount" />
+        <div class="row">
+            <div class="col-md-3 col-xs-6">
+                <input type="search" asp-for="Creator" placeholder="申请人" class="form-control" />
+            </div>
+            <div class="col-md-3 col-xs-6">
+                <input type="search" asp-for="Approver" placeholder="审批人" class="form-control" />
+            </div>
+            <div class="col-md-3 col-xs-6">
+                <input type="date" asp-for="CreateAtStart" placeholder="申请时间开始于" class="form-control" />
+            </div>
+            <div class="col-md-3 col-xs-6">
+                <input type="date" asp-for="CreateAtEnd" placeholder="申请时间结束于" class="form-control" />
+            </div>
+            <div class="col-md-3 col-xs-6">
+                <select asp-for="Department" class="form-control" asp-items="ViewBag.Departments">
+                    <option value="">申请部门</option>
+                </select>
+            </div>
+            <div class="col-md-3 col-xs-6">
+                <select asp-for="Step" asp-items="@Html.GetEnumSelectList(typeof(ApproveStep))" class="form-control">
+                    <option value="0">审批阶段</option>
+                </select>
+            </div>
+            <div class="col-md-3 col-xs-6">
+                <select asp-for="Result" asp-items="@Html.GetEnumSelectList(typeof(ApproveResult))" class="form-control">
+                    <option value="0">审批结果</option>
+                </select>
+            </div>
+            <div class="text-right col-md-3 col-xs-6">
+                <input type="submit" class="btn btn-primary" value="搜索" />
+                <input type="submit" class="btn btn-default" value="导出" />
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="panel panel-success">
+    <div class="panel-heading"><b>数据列表</b></div>
+    @* <div class="panel-body">测试</div> *@
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>申请人</th>
+                <th>部门</th>
+                <th>客户</th>
+                <th>项目</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var item in Model.Data)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Id)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ApplicantName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Department.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CustomerUnit)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ProjectName)
+                    </td>
+                    <td>
+                        @Html.ActionLink("详情", "Details", new {id = item.Id})
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+    <div class="panel-footer">
+        <nav aria-label="...">
+            <ul class="pager">
+                @if (Model.PageIndex <= 1)
+                {
+                    <li class="previous disabled"><a href="javascript:;">上一页</a></li>
+                }
+                else
+                {
+                    <li class="previous"><a id="prev" href="javascript:;">上一页</a></li>
+                }
+
+                <li style="line-height: 32px;">共 @Model.RecordCount 条；第 @Model.PageIndex / @Model.PageCount 页</li>
+
+                @if (Model.PageIndex >= Model.PageCount)
+                {
+                    <li class="next disabled"><a href="javascript:;">下一页</a></li>
+                }
+                else
+                {
+                    <li class="next"><a id="next" href="javascript:;">下一页</a></li>
+                }
+            </ul>
+        </nav>
+    </div>
+</div>
+
+
+
+
+@section Scripts
+{
+    <script>
+        $('#prev').on('click', function() {
+            var current = Number($('#id').val());
+            if (current <= 1) return;
+
+            $('#id').val(current - 1);
+            $('form').trigger('submit');
+        });
+
+        $('#next').on('click', function () {
+            var current = Number($('#id').val());
+            var pages = Number($('#pages').val());
+            if (current >= pages) return;
+
+            $('#id').val(current + 1);
+            $('form').trigger('submit');
+        });
+    </script>
+}

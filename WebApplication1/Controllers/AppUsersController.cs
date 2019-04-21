@@ -6,10 +6,12 @@ using System;
 using System.Threading.Tasks;
 using HZC.MyOrm.Commons;
 using HZC.MyOrm.Expressions;
+using Microsoft.AspNetCore.Authorization;
 using WebApplication1.Models;
 
 namespace WebApplication1.Controllers
 {
+    [Authorize(Roles = "admin")]
     public class AppUsersController : Controller
     {
         private readonly MyDb _db = new MyDb();

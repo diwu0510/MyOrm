@@ -4,73 +4,98 @@
 
 @{
     ViewData["Title"] = "Audit";
-    var approval = (Approval) ViewBag.Entity;
+    var approval = (Approval)ViewBag.Entity;
 }
 
-<h2>Audit</h2>
+@section Head
+{
+    <style>
+        .dl-horizontal dt {
+            float: left;
+            width: 110px;
+            clear: left;
+            text-align: right;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            line-height: 2.4;
+        }
 
-<h4>AuditModel</h4>
+        .dl-horizontal dd {
+            margin-left: 130px;
+            line-height: 2.4;
+        }
+
+        h4.sub-title {
+            background-color: #f3f3f3;
+            color: darkslategrey;
+        }
+    </style>
+}
+
+<h2>财务审核</h2>
 <hr />
-<dl class="dl-horizontal">
-    <dt>申请人</dt>
-    <dd>@approval.ApplicantName</dd>
-    <dt>客户单位</dt>
-    <dd>@approval.CustomerUnit</dd>
-    <dt>联系人</dt>
-    <dd>[@approval.CustomerJob] @approval.CustomerName - @approval.ContactNumber</dd>
-    <dt>项目</dt>
-    <dd>@approval.ProjectName</dd>
-    <dt>预计完成日期</dt>
-    <dd>@approval.ExpectedClosingDate:yyyy-MM-dd</dd>
-    <dt>预计成交金额</dt>
-    <dd>@approval.ExpectedClosingCost</dd>
-    <dt>预期利润</dt>
-    <dd>@approval.ExpectedClosingProfit</dd>
-    <dt>申请金额</dt>
-    <dd>@approval.AppliedAmount</dd>
-    <dt>申请原因</dt>
-    <dd>@approval.AppliedReason</dd>
-    <dt>审批人</dt>
-    <dd>@approval.ApproverName</dd>
-    <dt>审批备注</dt>
-    <dd>@approval.ApproveRemark</dd>
-    <dt>审批时间</dt>
-    <dd>@approval.ApproveAt?.ToString("yyyy-MM-dd HH:mm") ?? ""</dd>
-    <dt>订单编号</dt>
-    <dd>@approval.OrderNo</dd>
-    <dt>税点</dt>
-    <dd>@approval.TaxPoint</dd>
-    <dt>付款信息</dt>
-    <dd>@approval.PaymentInfo</dd>
-    <dt>实际成交金额</dt>
-    <dd>@approval.ActualClosingAmount</dd>
-    <dt>实际成交利润</dt>
-    <dd>@approval.ActualClosingProfit</dd>
-    <dt>回款记录</dt>
-    <dd>@approval.Collections</dd>
-    <dt>完成日期</dt>
-    <dd>@approval.CompleteAt?.ToString("yyyy-MM-dd")</dd>
-    <dt>财务审核利润</dt>
-    <dd>@approval.AuditProfit</dd>
-    <dt>实际服务费</dt>
-    <dd>@approval.ActualServiceAmount</dd>
-    <dt>财务审核人</dt>
-    <dd>@approval.AuditorName</dd>
-    <dt>财务审核日期</dt>
-    <dd>@approval.AuditAt?.ToString("yyyy-MM-dd HH:mm")</dd>
-    <dt>第二次审批人</dt>
-    <dd>@approval.ConfirmName</dd>
-    <dt>第二次审批备注</dt>
-    <dd>@approval.ConfirmRemark</dd>
-    <dt>第二次审批时间</dt>
-    <dd>@approval.ConfirmAt?.ToString("yyyy-MM-dd HH:mm")</dd>
-    <dt>审批结果</dt>
-    <dd>@ApproveResultUtil.GetDescription(approval.ApproveResult)</dd>
-    <dt>当前步骤</dt>
-    <dd>@ApproveStepUtil.GetDescription(approval.ApproveStep)</dd>
-    <dt>创建时间</dt>
-    <dd>@approval.CreateAt.ToString("yyyy-MM-dd HH:mm")</dd>
-</dl>
+<div>
+    <h4>@approval.ProjectName</h4>
+    <h4>
+        <span class="label label-primary">@ApproveStepUtil.GetDescription(approval.ApproveStep)</span>
+        <span class="label label-success">@ApproveResultUtil.GetDescription(approval.ApproveResult)</span>
+    </h4>
+    <hr />
+    <div>
+        <h4 class="sub-title">申请内容</h4>
+        <dl class="dl-horizontal">
+            <dt>客户信息</dt>
+            <dd>[@approval.CustomerJob] @approval.CustomerName - @approval.ContactNumber</dd>
+            @*<dt>项目</dt>
+                <dd>@Model.ProjectName</dd>*@
+            <dt>预计完成日期</dt>
+            <dd>@approval.ExpectedClosingDate?.ToString("yyyy-MM-dd")</dd>
+            <dt>预计成交金额</dt>
+            <dd>@approval.ExpectedClosingCost</dd>
+            <dt>预期利润</dt>
+            <dd>@approval.ExpectedClosingProfit</dd>
+            <dt>申请金额</dt>
+            <dd>@approval.AppliedAmount</dd>
+            <dt>申请原因</dt>
+            <dd>@approval.AppliedReason</dd>
+            <dt>申请时间</dt>
+            <dd>@approval.CreateAt.ToString("yyyy-MM-dd HH:mm")</dd>
+        </dl>
+    </div>
+
+    <div>
+        <h4 class="sub-title">第一次审批</h4>
+        <dl class="dl-horizontal">
+            <dt>审批人</dt>
+            <dd>@approval.ApproverName</dd>
+            <dt>审批时间</dt>
+            <dd>@approval.ApproveAt?.ToString("yyyy-MM-dd HH:mm")</dd>
+            <dt>审批备注</dt>
+            <dd>@approval.ApproveRemark</dd>
+        </dl>
+    </div>
+
+    <div>
+        <h4 class="sub-title">项目执行情况</h4>
+        <dl class="dl-horizontal">
+            <dt>订单编号</dt>
+            <dd>@approval.OrderNo</dd>
+            <dt>税点</dt>
+            <dd>@approval.TaxPoint</dd>
+            <dt>付款信息</dt>
+            <dd>@approval.PaymentInfo</dd>
+            <dt>实际成交金额</dt>
+            <dd>@approval.ActualClosingAmount</dd>
+            <dt>实际成交利润</dt>
+            <dd>@approval.ActualClosingProfit</dd>
+            <dt>回款记录</dt>
+            <dd>@approval.Collections</dd>
+            <dt>完成日期</dt>
+            <dd>@approval.CompleteAt?.ToString("yyyy-MM-dd")</dd>
+        </dl>
+    </div>
+</div>
 
 <div class="row">
     <div class="col-md-4">
@@ -88,13 +113,13 @@
                 <span asp-validation-for="ActualServiceAmount" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-default" />
+                <input type="submit" value="提交" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">返回列表</a>
 </div>
 

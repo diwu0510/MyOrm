@@ -6,10 +6,36 @@
     var approval = (Approval)ViewBag.Entity;
 }
 
-<h2>Approve</h2>
+@section Head
+{
+    <style>
+        .dl-horizontal dt {
+            float: left;
+            width: 110px;
+            clear: left;
+            text-align: right;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            line-height: 2.4;
+        }
+
+        .dl-horizontal dd {
+            margin-left: 130px;
+            line-height: 2.4;
+        }
+
+        h4.sub-title {
+            background-color: #f3f3f3;
+            color: darkslategrey;
+        }
+    </style>
+}
+
+<h2>申请详情</h2>
 
 <div>
-    <h4>Approval</h4>
+    <h4>@approval.CustomerUnit</h4>
     <hr />
     <dl class="dl-horizontal">
         <dt>申请人</dt>
@@ -46,10 +72,10 @@
         <textarea asp-for="Remark" class="form-control"></textarea>
     </div>
     <div class="form-group">
-        <input type="submit" value="Save" class="btn btn-default" />
+        <input type="submit" value="确认" class="btn btn-primary" />
+        <input type="button" onclick="window.history.go(-1)" value="返回" class="btn btn-default" />
     </div>
 </form>
 <div>
-    @Html.ActionLink("Edit", "Edit", new { /* id = Model.PrimaryKey */ }) |
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">返回列表</a>
 </div>

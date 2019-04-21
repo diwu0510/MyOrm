@@ -8,67 +8,43 @@
 <h2>@ViewData["Title"]</h2>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create" class="btn btn-success">新申请</a>
 </p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Id)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ProjectName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CustomerUnit)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CustomerName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CreateAt)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ApproveResult)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ApproveStep)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
+
+@foreach (var item in Model)
+{
+    <div class="panel panel-success">
+        <div class="panel-heading">
+            <div class="row">
+                <div class="col-md-8 col-xs-8">
+                    <b>@item.CustomerUnit</b>
+                </div>
+                <div class="col-md-4 col-xs-4 text-right">
+                    <a asp-action="Details" asp-route-id="@item.Id" class="text-right">详情</a>
+                </div>
+            </div>
+        </div>
+        @if (!string.IsNullOrWhiteSpace(item.ProjectName))
         {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Id)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.ProjectName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.CustomerUnit)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.CustomerName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.CreateAt)
-                </td>
-                <td>
-                    @ApproveResultUtil.GetDescription(item.ApproveResult)
-                </td>
-                <td>
-                    @ApproveStepUtil.GetDescription(item.ApproveStep)
-                </td>
-                <td>
-                    @if (item.ApproveStep == (int)ApproveStep.Approved)
-                    {
-                        @Html.ActionLink("完善资料", "Supplement", new { id = item.Id })
-                    }
-                </td>
-            </tr>
+            <div class="panel-body">
+                @item.ProjectName
+            </div>
         }
-    </tbody>
-</table>
+        <table class="table">
+            <tbody>
+                <tr>
+                    <td><b>当前阶段</b></td>
+                    <td>@ApproveStepUtil.GetDescription(item.ApproveStep)</td>
+                </tr>
+                <tr>
+                    <td><b>审批结果</b></td>
+                    <td>@ApproveResultUtil.GetDescription(item.ApproveResult)</td>
+                </tr>
+                <tr>
+                    <td><b>创建时间</b></td>
+                    <td>@item.CreateAt.ToString("yyyy-MM-dd HH:mm")</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+}

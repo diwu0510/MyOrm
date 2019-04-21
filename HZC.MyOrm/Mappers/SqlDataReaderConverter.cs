@@ -209,7 +209,7 @@ namespace HZC.MyOrm.Mappers
 
             var initExpression = Expression.MemberInit(Expression.New(typeof(T)), memberBindings);
             func = Expression.Lambda<Func<SqlDataReader, T>>(initExpression, sdrParameter).Compile();
-            Dict.Add(_key, func);
+            Dict.TryAdd(_key, func);
             return func;
         }
 

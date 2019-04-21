@@ -3,6 +3,7 @@ using HZC.MyOrm;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using HZC.MyOrm.Commons;
 using WebApplication1.Data;
 using WebApplication1.Models;
 
@@ -187,6 +188,7 @@ namespace WebApplication1.Services
             pageIndex = pageIndex <= 0 ? 1 : pageIndex;
             var list = _db.Query<Approval>()
                 .Where(a => a.ApplicantNo == userNo)
+                .OrderBy(a => a.CreateAt, MyDbOrderBy.Desc)
                 .ToPageList(pageIndex, 20, out var count);
             total = count;
             return list;
@@ -245,6 +247,7 @@ namespace WebApplication1.Services
             pageIndex = pageIndex <= 0 ? 1 : pageIndex;
             var list = _db.Query<Approval>()
                 .Where(a => a.DepartmentId == departmentId)
+                .OrderBy(a => a.CreateAt, MyDbOrderBy.Desc)
                 .ToPageList(pageIndex, 20, out var count);
             total = count;
             return list;

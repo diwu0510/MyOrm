@@ -1,13 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using HZC.MyOrm;
+﻿using HZC.MyOrm;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Threading.Tasks;
 
 namespace WebApplication1.Controllers
 {
+    [Authorize(Roles = "admin")]
     public class DepartmentsController : Controller
     {
         private readonly MyDb _db = MyDb.New();

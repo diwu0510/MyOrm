@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using WebApplication1.Controllers;
 using WebApplication1.Data;
 
 namespace WebApplication1.Models
@@ -16,6 +17,8 @@ namespace WebApplication1.Models
             CreateMap<Approval, SupplementDto>().ReverseMap();
 
             CreateMap<Approval, AuditModel>();
+
+            CreateMap<ApprovalSearchParameter, ApprovalResult>().ReverseMap();
         }
     }
 }

@@ -3,11 +3,13 @@ using HZC.MyOrm;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using WebApplication1.Data;
+using WebApplication1.Extensions;
 using WebApplication1.Models;
 using WebApplication1.Services;
 
 namespace WebApplication1.Controllers
 {
+    [WeixinUser("master")]
     public class DepartmentApprovalsController : BaseController
     {
         private readonly ApprovalService _service;
@@ -109,9 +111,9 @@ namespace WebApplication1.Controllers
                 return Content("仅财务审核过的记录可审核");
             }
 
-            if (entity.ApplicantNo != CurrentUser.No)
+            if (entity.DepartmentId != CurrentUser.DepartmentId)
             {
-                return Content("申请人与当前账户不一致，禁止编辑");
+                return Content("申请人部门与当前账户不一致，禁止编辑");
             }
 
             ViewBag.Entity = entity;
@@ -148,5 +150,15 @@ namespace WebApplication1.Controllers
             return View(entity);
         }
         #endregion
+
+        #region 详情
+
+        public IActionResult Details(int id)
+        {
+            var entity = _db.Load<Approval>(id);
+            return View(entity);
+        }
+        #endregion
+
     }
 }

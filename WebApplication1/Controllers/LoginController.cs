@@ -30,20 +30,29 @@ namespace WebApplication1.Controllers
                 dto.Role = "admin";
                 dto.DepartmentId = 1;
             }
-
-            var user = _db.Load<AppUser>(u => u.Name == name && u.IsDelete == false);
-            if (user == null)
-            {
-                return Content("用户不存在");
-            }
             else
             {
-                dto.No = user.No;
-                dto.Name = user.Name;
-                dto.Role = user.IsMaster ? "master" : "user";
-                dto.DepartmentId = user.DepartmentId;
+                var user = _db.Load<AppUser>(u => u.Name == name && u.IsDelete == false);
+                if (user == null)
+                {
+                    return Content("用户不存在");
+                }
+                else
+                {
+                    dto.No = user.No;
+                    dto.Name = user.Name;
+                    if (user.IsFinance)
+                    {
+                        dto.Role = "audit";
+                    }
+                    else
+                    {
+                        dto.Role = user.IsMaster ? "master" : "user";
+                    }
+                    dto.DepartmentId = user.DepartmentId;
+                }
             }
-
+            
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, dto.No),
